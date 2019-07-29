@@ -1,0 +1,5 @@
+############## Requirements for test container #########
+pika
+configparser
+sklearn
+tensorflow
