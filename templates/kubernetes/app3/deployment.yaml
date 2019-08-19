@@ -1,0 +1,28 @@
+# This file configures the hello-world app which serves public web traffic.
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: app3-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app3
+  template:
+    metadata:
+      labels:
+        app: app3
+    spec:
+      containers:
+        - name: app3-container
+          # Replace [PROJECT_ID] with your project ID
+          image: gcr.io/ml-project-1-247712/test-app-3:latest
+          # This app listens on port 8080 for web traffic by default.
+          ports:
+            - containerPort: 8080
+            - containerPort: 22
+              name: ssh
+          env:
+            - name: PORT
+              value: "8080"
+

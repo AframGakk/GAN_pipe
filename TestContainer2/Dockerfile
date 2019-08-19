@@ -10,4 +10,4 @@ ENV PYTHONUNBUFFERED=1
 
 COPY . .
 
-CMD ["python", "./TestControler1.py"]
+CMD ["python", "./TestControler2.py"]
