@@ -267,6 +267,25 @@ Delete pod
 kubectl delete pod [POD_NAME]
 ```
 
+### Nodes
+
+Resize the amount of nodes in the cluster
+```bash
+gcloud container clusters resize [CLUSTER_NAME] --num-nodes [NUM_NODES]
+```
+
+
+### Pods
+
+ssh into a pod
+````bash
+kubectl exec -it [POD_NAME] -- /bin/bash
+````
+
+Get all pods detailed view
+```bash
+kubectl get pod -o wide
+```
 
 
 

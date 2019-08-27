@@ -1,15 +1,9 @@
 import pika
-import configparser
+import os
 
-config = configparser.ConfigParser()
+RABBIT = os.environ['RABBIT']
 
-try:
-    config.read('./config/config.ini')
-except FileNotFoundError:
-    print('Config file not found')
-    exit()
-
-connection = pika.BlockingConnection(pika.ConnectionParameters(config['AMQP']['SERVER']))
+connection = pika.BlockingConnection(pika.ConnectionParameters(RABBIT))
 channel = connection.channel()
 
 cont2_routing = 'Container2_queue'

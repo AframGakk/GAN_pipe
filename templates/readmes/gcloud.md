@@ -81,5 +81,10 @@ List all compute instances
 gcloud compute instances list
 ```
 
+ssh to an instance
+```bash
+gcloud compute ssh [INSTANCE_NAME]
+```
+
 
 

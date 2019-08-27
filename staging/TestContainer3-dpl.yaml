@@ -2,21 +2,21 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: test-container-1-deployment
+  name: test-container-3-deployment
 # namespace: cepstralinstruments
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: test-container-1
+      app: test-container-3
   template:
     metadata:
       labels:
-        app: test-container-1
+        app: test-container-3
     spec:
       containers:
-        - name: test-container-1
-          image: gcr.io/samplergan/test-app-1:latest
+        - name: test-container-3
+          image: gcr.io/samplergan/test-app-3:latest
           ports:
             - containerPort: 22
               name: ssh
