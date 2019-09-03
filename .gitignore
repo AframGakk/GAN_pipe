@@ -1,5 +1,5 @@
 .idea/
 Data/
-.DS_Store/
+.DS_Store
 venv/
 __pycache__/
