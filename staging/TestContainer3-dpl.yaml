@@ -17,9 +17,6 @@ spec:
       containers:
         - name: test-container-3
           image: gcr.io/samplergan/test-app-3:latest
-          ports:
-            - containerPort: 22
-              name: ssh
           env:
             - name: RABBIT
               value: '10.23.240.87'
