@@ -3,3 +3,8 @@ Data/
 .DS_Store
 venv/
 __pycache__/
+
+FeatureExploration/images/*
+*.log
+*.wav
+*.pkl

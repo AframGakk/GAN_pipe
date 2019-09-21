@@ -34,6 +34,7 @@ class DataIngestionService:
     def convertRawToRecordData(self):
 
         bucket_obj = sampleRepo.getSampleSet()
+        #logger.info(__name__, bucket_obj)
         recordRepo.saveRecordData(bucket_obj)
 
 

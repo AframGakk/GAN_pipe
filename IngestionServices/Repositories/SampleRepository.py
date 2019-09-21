@@ -1,6 +1,7 @@
 import os
 from Services.Log.Log import Log
 from Repositories.BucketConnector.BucketConnector import BucketConnector
+import re
 
 logger = Log(file_handler=True, file='./logs/logs.log')
 
@@ -52,11 +53,14 @@ class SampleRepository:
             tmp = item.name.split('/')
             type = tmp[0]
             name = tmp[1]
+
+            if not re.match(r'.*wav$', name):
+                continue
+
             location = 'gs://wisebeat-raw-sound-storage' + '/' + item.name
             record_object['names'].append(name)
             record_object['types'].append(type)
             record_object['locations'].append(location)
-
 
         return record_object
 

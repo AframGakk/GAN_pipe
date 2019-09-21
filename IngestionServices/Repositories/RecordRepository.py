@@ -1,5 +1,6 @@
 import os
 import pickle
+import traceback
 
 from Repositories.BucketConnector.BucketConnector import BucketConnector
 from Services.Log.Log import Log
@@ -30,8 +31,12 @@ class RecordRepository:
         with open(local_file, 'wb') as lFile:
             pickle.dump(record_data, lFile)
 
-        blob = self.BUCKET.blob('all/sample_records.pkl')
-        blob.upload_from_filename('./tmp/record_data.pkl')
+        try:
+            blob = self.BUCKET.blob('all/sample_records.pkl')
+            blob.upload_from_filename('./tmp/record_data.pkl')
+        except Exception:
+            logger.error(__name__, 'Could not save record data into GCP bucket', exception=traceback.print_exc())
 
         os.remove('./tmp/record_data.pkl')
+
 

@@ -11,7 +11,7 @@ env_var = {
     'RABBIT': 'localhost',
     'RABBIT_USER': 'guest',
     'RABBIT_PASS': 'guest',
-    'GOOGLE_APPLICATION_CREDENTIALS': ''
+    'GOOGLE_APPLICATION_CREDENTIALS': '/Users/vilhjamurr.vilhjalmsson/.gcp/wisebeat_bucket.json'
 }
 
 os.chdir('../../')
@@ -30,9 +30,12 @@ class TestRecordRepo(TestCase):
     def test_saves_records_locally(self):
         sampleRepo = SampleRepository()
         record_data = sampleRepo.getSampleSetLocal()
+
         loc = self.repo.saveRecordDataLocal(record_data)
         self.assertTrue(os.path.isfile(loc))
 
     def test_cont(self):
         sampleRepo = SampleRepository()
-        record_data = sampleRepo.getSampleSetLocal()
+        record_data = sampleRepo.getSampleSet()
+        log.info(record_data)
+        self.repo.saveRecordData(record_data)
