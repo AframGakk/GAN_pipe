@@ -1,6 +1,6 @@
 # Wisebeat GAN engine
 
-##Local Dev setup
+## Local Dev setup
 
 The entire engine is written in python 3.7 with docker deployment to local environment for testing and GCP kubernetes
 deployment to staging and production.
