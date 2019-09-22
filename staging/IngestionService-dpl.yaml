@@ -2,22 +2,25 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: test-container-1-deployment
+  name: ingestion-service
 # namespace: cepstralinstruments
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: test-container-1
+      app: ingestion-service
   template:
     metadata:
       labels:
-        app: test-container-1
+        app: ingestion-service
     spec:
       containers:
-        - name: test-container-1
-          image: gcr.io/samplergan/test-app-1:latest
+        - name: ingestion-service
+          image: gcr.io/samplergan/ingestion-service:latest
           env:
             - name: RABBIT
               value: '10.27.240.87'
-
+            - name: RABBIT_USER
+              value: 'admin'
+            - name: RABBIT_PASS
+              value: 'aframgakk19'

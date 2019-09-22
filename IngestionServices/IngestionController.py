@@ -2,6 +2,7 @@ import pika
 from pika.exceptions import StreamLostError
 import json
 import os
+import traceback
 
 from Services.DataIngestionService import DataIngestionService
 from Services.Log.Log import Log
@@ -25,6 +26,7 @@ class IngestionController:
 
         # Declare the queue, if it doesn't exist
         self.channel.queue_declare(queue=self.ingestion_queue, durable=True)
+        self.channel.basic_consume(queue=self.ingestion_queue, on_message_callback=self.RawIngestionCallback, auto_ack=True)
 
     def consume(self):
 
@@ -44,7 +46,7 @@ class IngestionController:
 
 if __name__ == '__main__':
     controller = IngestionController()
-    controller.consume()
+    #controller.consume()
 
     try:
         controller.consume()
@@ -54,5 +56,8 @@ if __name__ == '__main__':
     except KeyboardInterrupt:
         logger.info(__name__, 'manually closed ingestion service, goodbye!')
         controller.connection.close()
-
+    except Exception as e:
+        logger.error(__name__, 'Error in Ingestion controller', exception=e)
+    else:
+        logger.error(__name__, 'Unknown Error in Ingestion controller', exception=traceback.print_exc())
 
