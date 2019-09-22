@@ -1,6 +1,6 @@
 node {
     stage('clean') {
-        sh 'll'
+        sh 'ls -ln'
         sh './staging/cleanup.sh'
 
     }
