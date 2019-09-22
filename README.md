@@ -11,6 +11,7 @@ deployment to staging and production.
 * pip
 * gcloud
 * docker
+* GCP dev credential file
 
 ### Additional requirements for OSX
 * homebrew
@@ -51,6 +52,40 @@ verify install
 ```bash
 python --version
 ```
+
+#### Pip install linux
+
+To check if installed
+````bash
+pip --version
+````
+
+Update apt-get
+```bash
+sudo apt-get update
+```
+
+```bash
+sudo apt-get install pip
+```
+
+confirm install
+```bash
+pip --version
+```
+#### pip install OSX
+Make sure homebrew has been installed
+
+install with homebrew
+```bash
+brew install pip
+```
+
+verify install
+```bash
+pip --version
+```
+
 
 
 
