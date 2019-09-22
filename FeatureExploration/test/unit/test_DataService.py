@@ -4,7 +4,7 @@ from unittest import TestCase
 import os
 
 from Services.DataService.DataService import DataService
-from tests.TestLog.TestLog import TestLog
+from test.TestLog.TestLog import TestLog
 
 env_var = {
     'RABBIT': 'localhost',
@@ -21,7 +21,7 @@ mock_locations = {
 os.chdir('../../')
 log = TestLog()
 
-class TestModelRepo(TestCase):
+class test_ModelRepo(TestCase):
 
     @patch.dict('Repositories.RawRecordRepository.RawRecordRepo.os.environ', env_var)
     def setUp(self):

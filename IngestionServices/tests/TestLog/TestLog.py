@@ -1,5 +1,5 @@
 
-from tests.TestLog.bcolors import bcolors
+from test.TestLog.bcolors import bcolors
 
 class TestLog:
 

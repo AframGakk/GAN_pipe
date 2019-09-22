@@ -4,7 +4,7 @@ from unittest import TestCase
 import os
 
 from Repositories.BucketConnector.BucketConnector import BucketConnector
-from tests.TestLog.TestLog import TestLog
+from test.TestLog.TestLog import TestLog
 
 env_var = {
     'RABBIT': 'localhost',

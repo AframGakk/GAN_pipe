@@ -5,7 +5,7 @@ import os
 import re
 
 from Repositories.SampleRepository import SampleRepository
-from tests.TestLog.TestLog import TestLog
+from test.TestLog.TestLog import TestLog
 
 env_var = {
     'RABBIT': 'localhost',

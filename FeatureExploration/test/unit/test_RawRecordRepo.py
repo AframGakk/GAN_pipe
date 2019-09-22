@@ -5,7 +5,7 @@ import os
 import re
 
 from Repositories.RawRecordRepository.RawRecordRepo import RawRecordRepo
-from tests.TestLog.TestLog import TestLog
+from test.TestLog.TestLog import TestLog
 
 env_var = {
     'RABBIT': 'localhost',
@@ -17,7 +17,7 @@ env_var = {
 os.chdir('../../')
 log = TestLog()
 
-class TestModelRepo(TestCase):
+class test_ModelRepo(TestCase):
 
     @patch.dict('Repositories.RawRecordRepository.RawRecordRepo.os.environ', env_var)
     def setUp(self):
