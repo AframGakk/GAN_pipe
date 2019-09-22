@@ -1,16 +1,14 @@
-pipeline {
-  stages {
-    
+node {
     stage('clean') {
 	    steps {
 	        sh './staging/cleanup.sh'
 	    }
     }
-    
+
     stage('Unit Tests') {
     	steps {
 
-      	}   
+      	}
     }
     
     stage('Build and send images to GCP CR') {
@@ -30,6 +28,4 @@ pipeline {
 
         }
     }
-
-  }
 }
