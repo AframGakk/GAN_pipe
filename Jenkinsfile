@@ -1,5 +1,7 @@
 node {
+    def git = checkout scm
     stage('clean') {
+        echo "${git.GIT_COMMIT}"
         sh 'ls -ln'
         sh './staging/cleanup.sh'
 
