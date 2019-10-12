@@ -10,9 +10,6 @@ class DiscriminatorModel:
         nclass = 2
         self.config = config
 
-        print(config.dim[0])
-        print(config.dim[1])
-
         inp = Input(shape=(config.dim[0], config.dim[1], 1))
         x = Convolution2D(32, (4, 10), padding="same")(inp)
         x = BatchNormalization()(x)
