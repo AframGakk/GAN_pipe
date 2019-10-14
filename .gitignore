@@ -9,5 +9,6 @@ FeatureExploration/images/*
 *.wav
 *.pkl
 
-
 *.ini
+*.npy
+
