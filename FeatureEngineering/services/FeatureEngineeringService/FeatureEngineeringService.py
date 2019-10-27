@@ -111,6 +111,8 @@ class FeatureEngineeringService:
         std = np.std(features, axis=0)
         feature_norm = (features - mean)/std
 
+        mean_all = mean['mean']
+
         return feature_norm
 
 
