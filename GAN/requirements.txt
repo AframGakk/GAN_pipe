@@ -5,3 +5,5 @@ sklearn
 librosa
 matplotlib
 pandas
+google-cloud-storage
+soundfile

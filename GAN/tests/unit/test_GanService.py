@@ -18,14 +18,6 @@ class test_GanService(TestCase):
     def test_real_audio_batch_size(self):
         self.service.train()
 
-        # generate 5
-        numb = 5
-        gen_sound = self.service.generate_sound(numb)
-        path = './tmp/sound_{}.wav'
-
-        for i in range(numb):
-            self.save_wav(gen_sound[i], path.format(i))
-
 
 
         name = ''
