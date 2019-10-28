@@ -1,11 +1,15 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import soundfile as sf
 
 from keras.optimizers import Adam
 from keras.models import Sequential
 from Models.GeneratorModel import GeneratorModel
 from Models.DiscriminatorModel import DiscriminatorModel
 from Models.ModelConfig import ModelConfig
+from Repositories.ModelRepo import ModelRepo
+
+_modelRepo = ModelRepo()
 
 class GanService:
     def __init__(self):
@@ -19,8 +23,9 @@ class GanService:
         self.discriminatorLossHistory = []
 
     def train(self, epochs=500, batch = 64):
-
-        for epoch in range(epochs):
+        epoch = 0
+        #for epoch in range(epochs):
+        while True:
             halfBatch = int(batch/2)
             noise = np.random.normal(0, 1, (halfBatch, 100))
             training_features = self._getFeaturesLocal('./tmp/targets.npy')
@@ -50,11 +55,19 @@ class GanService:
             g_loss_mean = np.mean(g_loss)
             self.generatorLossHistory.append(g_loss_mean)
 
-            if epoch % 5 == 0:
+            if epoch % 100 == 0:
                 print("epoch: %d" % (epoch))
                 print("Discriminator_loss: %f, Generator_loss: %f" % (d_loss_mean, g_loss_mean))
+                self.plot_losses(epoch, bucket_save=True)
+                _modelRepo.saveDataToBucket(self.generator.model)
+                first_sound = self.generate_sound(1)[0]
+                sf.write('./tmp/sample.wav', first_sound, 16000, subtype='PCM_16')
+                _modelRepo.saveSoundToBucket('./tmp/sample.wav', epoch)
 
-        self.plot_losses()
+            epoch = epoch + 1
+
+
+        #self.plot_losses()
 
 
 
@@ -72,10 +85,18 @@ class GanService:
         return model
 
 
-    def plot_losses(self):
+    def plot_losses(self, epoch, bucket_save=False):
         plt.figure(figsize=(10, 5))
         plt.plot(self.generatorLossHistory)
         plt.plot(self.discriminatorLossHistory)
+        plt.title('Epoch {}'.format(epoch))
+        plt.ylabel('acc')
+        plt.xlabel('Epochs')
+        if bucket_save:
+            plt.savefig('./tmp/loss_plot.png')
+            _modelRepo.saveFigureToBucket('./tmp/loss_plot.png')
+            return
+
         plt.show()
 
 
@@ -83,3 +104,4 @@ class GanService:
         #seed = np.random.normal([num_to_generate, 100])
         seed = np.random.normal(0, 1, (num_to_generate, 100))
         return self.generator.generate_sound(seed)
+
