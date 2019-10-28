@@ -20,38 +20,58 @@ class FeatureEngineeringService:
 
         return pd.DataFrame(dataframe)
 
-    def transformFeatures(self, label, version):
+    def getRecordDataframeByLabel(self, label):
+        dataframe = pd.DataFrame(self._recordRepo._getRecordsLocal())
 
-        # Get the dataframe
-        dataframe = self.getRecordDataframe(label, version)
-
-        # undersample
-        undersampled = self._undersampling(dataframe, label)
-
-        # split features and labels
-        features = undersampled.iloc[:,:-1]
-        targets = self.prepare_targetlabels(undersampled, label)
-
-        # split test and train
-        feature_train, feature_test, target_train, target_test = self._train_test_split(features, targets)
-
-        # prepare audio features
-        m_config = FeatureConfig()
-        feature_train = self.prepare_audiofeatures(feature_train, m_config)
-        feature_test = self.prepare_audiofeatures(feature_test, m_config)
-
-        # normalize audio features
-        feature_train = self._normalize_features(feature_train)
-        feature_test = self._normalize_features(feature_test)
-
-        # save files locally
-        self._save_numpy_local(target_train.to_numpy(), 'target_train')
-        self._save_numpy_local(target_test.to_numpy(), 'target_test')
-        self._save_numpy_local(feature_train, 'feature_train')
-        self._save_numpy_local(feature_test, 'feature_test')
+        return dataframe[dataframe['types'] == label]
 
 
-    def prepare_audiofeatures(self, df, mfcc_config):
+    def transformFeatures(self, label, version, MFCC=True):
+
+
+        if MFCC:
+            # Get the dataframe
+            dataframe = self.getRecordDataframe(label, version)
+
+            # undersample
+            undersampled = self._undersampling(dataframe, label)
+
+            # split features and labels
+            features = undersampled.iloc[:,:-1]
+            targets = self.prepare_targetlabels(undersampled, label)
+
+            # split test and train
+            feature_train, feature_test, target_train, target_test = self._train_test_split(features, targets)
+
+            # prepare audio features
+            m_config = FeatureConfig()
+            feature_train = self.prepare_audiofeatures_MFCC(feature_train, m_config)
+            feature_test = self.prepare_audiofeatures_MFCC(feature_test, m_config)
+
+            # normalize audio features
+            feature_train = self._normalize_features(feature_train)
+            feature_test = self._normalize_features(feature_test)
+
+            # save files locally
+            self._save_numpy_local(target_train.to_numpy(), 'target_train')
+            self._save_numpy_local(target_test.to_numpy(), 'target_test')
+            self._save_numpy_local(feature_train, 'feature_train')
+            self._save_numpy_local(feature_test, 'feature_test')
+
+        else:
+            # Get the dataframe
+            dataframe = self.getRecordDataframeByLabel(label)
+
+            # split features
+            features = dataframe.iloc[:, :-1]
+
+            train = self.prepare_audiofeatures(features)
+            train = self._normalize_features(train)
+
+            self._save_numpy_local(train, 'targets')
+
+
+    def prepare_audiofeatures_MFCC(self, df, mfcc_config):
         features = np.empty(shape=(df.shape[0], mfcc_config.sample_dimension[0], mfcc_config.sample_dimension[1], 1))
         input_length = mfcc_config.sample_length
 
@@ -60,16 +80,12 @@ class FeatureEngineeringService:
             data, _ = librosa.core.load(df['locations'][i], sr=mfcc_config.sampling_rate, res_type='kaiser_fast')
 
             if len(data) > input_length:
-                max_offset = len(data) - input_length
-                offset = np.random.randint(max_offset)
-                data = data[offset:(input_length + offset)]
+                #max_offset = len(data) - input_length
+                #offset = np.random.randint(max_offset)
+                #data = data[:(input_length + offset)]
+                data = data[:input_length]
             else:
-                if input_length > len(data):
-                    max_offset = input_length - len(data)
-                    offset = np.random.randint(max_offset)
-                else:
-                    offset = 0
-                data = np.pad(data, (offset, input_length - len(data) - offset), "constant")
+                data = np.pad(data, (0, input_length - len(data)), "constant")
 
             data = librosa.feature.mfcc(data, sr=mfcc_config.sampling_rate, n_mfcc=mfcc_config.mfcc_mels)
             data = np.expand_dims(data, axis=-1)
@@ -77,6 +93,29 @@ class FeatureEngineeringService:
             placer = placer + 1
 
         return features
+
+    def prepare_audiofeatures(self, df):
+        input_length = 16000
+        features = np.empty((len(df), input_length))
+        locations = df['locations']
+
+        for index, location in enumerate(locations):
+            data, _ = librosa.core.load(location, sr=input_length, res_type='kaiser_fast')
+
+            # Random offset / Padding
+            if len(data) > input_length:
+                #max_offset = len(data) - input_length
+                #offset = np.random.randint(max_offset)
+                #data = data[:(input_length + offset)]
+                data = data[:input_length]
+            else:
+                data = np.pad(data, (0, input_length - len(data)), "constant")
+
+            features[index, ] = data
+
+        return features
+
+
 
     def prepare_targetlabels(self, df, true_label):
         '''
@@ -110,8 +149,6 @@ class FeatureEngineeringService:
         mean = np.mean(features, axis=0)
         std = np.std(features, axis=0)
         feature_norm = (features - mean)/std
-
-        mean_all = mean['mean']
 
         return feature_norm
 

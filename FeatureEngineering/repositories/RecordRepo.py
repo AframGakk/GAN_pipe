@@ -18,4 +18,11 @@ class RecordRepo:
         blob = self.BUCKET.blob('{}_{}/sample_records.pkl'.format(label, version))
         blob.download_to_filename('./tmp/sample_records.pkl')
 
+    def _getRecordsLocal(self):
+        location = './tmp/sample_records.pkl'
+        with open(location, 'rb') as file:
+            data = pickle.load(file)
+
+        return data
+
 

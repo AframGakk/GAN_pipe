@@ -2,6 +2,7 @@ from unittest import TestCase
 from unittest.mock import patch
 import os
 from services.plots.plots import plot_audio
+import pandas as pd
 
 from repositories.RecordRepo import RecordRepo
 from services.Log.Log import Log
@@ -24,3 +25,10 @@ class test_ClientRepo(TestCase):
         data = self.repo.getRecords(label, version)
 
         self.assertTrue(data)
+
+    def test_getRecordsLocal(self):
+        label = 'KICK'
+        dataframe = pd.DataFrame(self.repo._getRecordsLocal())
+
+        dataframe = dataframe[dataframe['types'] == label]
+

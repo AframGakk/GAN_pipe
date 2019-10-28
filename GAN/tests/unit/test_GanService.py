@@ -1,0 +1,35 @@
+from unittest import TestCase
+import os
+import numpy as np
+import soundfile as sf
+
+from Services.GanService import GanService
+
+os.chdir('../../')
+
+class test_GanService(TestCase):
+
+    def setUp(self):
+        self.service = GanService()
+
+    def test_init(self):
+        self.assertTrue(self.service)
+
+    def test_real_audio_batch_size(self):
+        self.service.train()
+
+        # generate 5
+        numb = 5
+        gen_sound = self.service.generate_sound(numb)
+        path = './tmp/sound_{}.wav'
+
+        for i in range(numb):
+            self.save_wav(gen_sound[i], path.format(i))
+
+
+
+        name = ''
+
+    def save_wav(self, wav, path):
+        sf.write(path, wav, 16000, subtype='PCM_16')  # 16000 sample rate
+

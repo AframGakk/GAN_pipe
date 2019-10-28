@@ -121,8 +121,6 @@ class test_ClientRepo(TestCase):
         features = self.service.prepare_audiofeatures(dataframe, config)
         norm_feat = self.service._normalize_features(features)
 
-
-
         self.assertEqual(len(features), len(norm_feat))
 
 
@@ -164,6 +162,27 @@ class test_ClientRepo(TestCase):
         self.assertTrue(os.path.isfile('./tmp/target_test.npy'))
 
 
+    def test_getRecordDataframeByLabel(self):
+        label = 'KICK'
+        data = self.service.getRecordDataframeByLabel(label)
+
+        name = ''
+
+    def test_no_undersampling_no_mfcc(self):
+        label = 'KICK'
+        version = 2
+
+        self.service.transformFeatures(label, version, MFCC=False)
+
+
+    def test_prepare_fullaudiofeatures(self):
+        dataframe = self.service.getRecordDataframeByLabel('KICK')
+
+        features = self.service.prepare_audiofeatures(dataframe)
+
+        self.assertEqual(features.shape[1], 16000)
+
+        name = ''
 
 
 
