@@ -4,22 +4,24 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.io import wavfile
+import tensorflow as tf
 
 
 #from utils import audio_tools as audio
 
 from Models.GeneratorModel import GeneratorModel
+from Models.GeneratorModel import GenModel
 
 os.chdir('../../')
 
 
 class test_GeneratorModel(TestCase):
 
-    def setUp(self):
-        self.generator = GeneratorModel()
 
     def test_init(self):
-        self.assertTrue(self.generator)
+
+        g = GenModel()
+        #self.assertTrue(self.generator)
 
     def test_images_should_be_16(self):
         # 16 is the half of batch size 32
@@ -37,6 +39,9 @@ class test_GeneratorModel(TestCase):
         # self.save_wav(first, './tmp/new_sound.wav')
 
         self.assertEqual(len(first), 16000)
+
+    def test_version(self):
+        print(tf.__version__)
 
 
 
