@@ -14,4 +14,4 @@ class JobDTO:
     def __dict__(self):
         return { 'id': self.id, 'version': self.version, 'date_time_start': self.date_time_start,
                  'date_time_stop': self.date_time_stop, 'model_location': self.model_location
-                 'data_location'}
+                 }
