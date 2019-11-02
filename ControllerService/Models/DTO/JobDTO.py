@@ -37,7 +37,7 @@ class JobDTO:
     def __dict__(self):
         return { 'id': self.id, 'version': self.version, 'date_time_start': self.date_time_start,
                  'date_time_stop': self.date_time_stop, 'model_location': self.model_location,
-                 'data_location': self.data_location, 'sound_type': self.sound_type, 'parameters': self.parameters }
+                 'data_location': self.data_location, 'sound_type': self.sound_type, 'parameters': self.parameters, 'status': self.status }
 
     def json(self):
         return json.dumps(self.__dict__())

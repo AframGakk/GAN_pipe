@@ -77,7 +77,7 @@ class Controller:
         if jobDto:
             #self.channel.basic_publish(exchange='', routing_key=self.training_key, body=jobDto.json())
             print(jobDto.__dict__())
-            #self.channel.basic_publish(exchange='', routing_key=self.ingestion_key, body=jobDto.json())
+            self.channel.basic_publish(exchange='', routing_key=self.ingestion_key, body=jobDto.json())
 
 
     def featureEngineeringCallback(self, ch, method, props, body):
