@@ -1,12 +1,14 @@
 import googleapiclient.discovery
 import traceback
+from datetime import datetime
+import os
 
 from Repositories.JobRepo.JobRepo import JobRepo
 
 _jobRepo = JobRepo()
-TRAINER = '153671080191723390'
-ZONE = 'us-west1-b'
-PROJECT_ID = 'samplergan'
+TRAINER = os.environ['TRAINER']
+ZONE = os.environ['ZONE']
+PROJECT_ID = os.environ['PROJECT_ID']
 
 class JobService:
     def __init__(self):
@@ -27,30 +29,36 @@ class JobService:
             jobDto = _jobRepo.insertJob(jobInput)
         except Exception:
             print('Could not create a new job')
+            traceback.print_exc()
             return None
-
-        if self.active_jobs > 3:
-            self.job_queue.append(jobDto)
-            return None
-        else:
-            self.deployJob(jobDto)
 
         return jobDto
 
 
     def deployJob(self, jobDto):
 
-        # TODO: if instance off then turn on
+        jobDto.status = 1
+        self.updateJob(jobDto)
+
         if self._learnerInstance_status() == 'TERMINATED':
             self._turnOn_learner()
 
-        self.job_pool.add(jobDto)
-        self.active_jobs += 1
+        if self.active_jobs > 3:
+            self.job_queue.append(jobDto)
+            return None
+        else:
+            #self.deployJob(jobDto)
+            self.job_pool.add(jobDto)
+            self.active_jobs += 1
+            return jobDto
 
 
     def jobRetrieval(self, jobDto):
-        self.job_pool.remove(jobDto)
+        if jobDto in self.job_pool:
+            self.job_pool.remove(jobDto)
         self.active_jobs -= 1
+        jobDto.date_time_stop = datetime.timestamp(datetime.now())
+        jobDto.status = 2
         self.updateJob(jobDto)
 
         if self.job_queue:
@@ -58,7 +66,6 @@ class JobService:
             return jobDto
         else:
             if self.active_jobs <= 0:
-                # TODO: shutdown learner
                 self._turnOff_learner()
             return None
 

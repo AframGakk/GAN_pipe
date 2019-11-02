@@ -1,24 +1,18 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-import configparser
-import traceback
+from os import environ
 
-config = configparser.ConfigParser()
+
 
 from Models.Entities.DataEntities import Base
 
 class SqlEngine:
     def __init__(self):
 
-        try:
-            config.read('./config/config.ini')
-            self.PGHOST = config['SQL_CONNECTOR']['PGHOST']
-            self.PGDATABASE = config['SQL_CONNECTOR']['PGDATABASE']
-            self.PGUSER = config['SQL_CONNECTOR']['PGUSER']
-            self.PGPASSWORD = config['SQL_CONNECTOR']['PGPASSWORD']
-        except:
-            print('could not load config file!')
-            print(traceback.print_exc())
+        self.PGHOST = environ['PGHOST']
+        self.PGDATABASE = environ['PGDATABASE']
+        self.PGUSER = environ['PGUSER']
+        self.PGPASSWORD = environ['PGPASSWORD']
 
         conn_string = "postgresql+psycopg2://{}:{}@{}/{}".format(self.PGUSER, self.PGPASSWORD, self.PGHOST, self.PGDATABASE)
         engine = create_engine(conn_string)

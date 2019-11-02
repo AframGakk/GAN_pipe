@@ -1,6 +1,7 @@
 from sqlalchemy import create_engine
 import traceback
 import configparser
+from datetime import datetime
 
 from Repositories.SqlConnector.SqlEngine import SqlEngine
 from Models.Entities.DataEntities import gan_parameters, sound_type, gan_job
@@ -68,17 +69,21 @@ class JobRepo:
         #User.query.get(23)
         sound_id = session.query(sound_type.id).filter(sound_type.name == modelInput.sound_type).scalar()
 
-        job = gan_job(sound_type=sound_id, parameters=param.id)
+        now = datetime.now()
+
+        job = gan_job(version=modelInput.version, date_time_start=now, sound_type=sound_id, parameters=param.id)
         session.add(job)
         session.commit()
 
         retJobDto = JobDTO(job.id,
                            job.version,
-                           job.date_time_start,
+                           datetime.timestamp(now),
                            job.date_time_stop,
                            job.model_location,
+                           None,
                            job.sound_type,
-                           job.parameters)
+                           job.parameters,
+                           job.status)
 
         return retJobDto
 
@@ -104,12 +109,22 @@ class JobRepo:
         session = self.engine.session()
         job = session.query(gan_job).filter(gan_job.id == inputModel.id).one()
 
+        date_start = None
+        date_stop = None
+
+        if inputModel.date_time_start:
+            date_start = datetime.fromtimestamp(inputModel.date_time_start)
+
+        if inputModel.date_time_stop:
+            date_stop = datetime.fromtimestamp(inputModel.date_time_stop)
+
         job.version = inputModel.version
-        job.date_time_start = inputModel.date_time_start
-        job.date_time_stop = inputModel.date_time_stop
+        job.date_time_start = date_start
+        job.date_time_stop = date_stop
         job.model_location = inputModel.model_location
         job.sound_type = inputModel.sound_type
         job.parameters = inputModel.parameters
+        job.status = inputModel.status
 
         session.add(job)
         session.commit()

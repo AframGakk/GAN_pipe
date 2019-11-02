@@ -5,3 +5,4 @@
 #gcloud builds submit --tag gcr.io/samplergan/test-app-3 ./TestContainer3/
 
 gcloud builds submit --tag gcr.io/samplergan/ingestion-service ./IngestionServices/
+gcloud builds submit --tag gcr.io/samplergan/controller-service ./ControllerService/

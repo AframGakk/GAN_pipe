@@ -10,3 +10,4 @@
 #kubectl delete service test-container-3-service
 
 kubectl delete deployment ingestion-service
+kubectl delete deployment controller-service
