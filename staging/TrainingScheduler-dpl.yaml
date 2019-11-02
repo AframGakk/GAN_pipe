@@ -1,0 +1,28 @@
+# This file configures the hello-world app which serves public web traffic.
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: training-scheduler
+# namespace: cepstralinstruments
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: training-scheduler
+  template:
+    metadata:
+      labels:
+        app: training-scheduler
+    spec:
+      containers:
+        - name: training-scheduler
+          image: gcr.io/samplergan/training-scheduler:latest
+          env:
+            - name: RHOST
+              value: '10.27.240.87'
+            - name: RUSER
+              value: 'admin'
+            - name: RPASS
+              value: 'aframgakk19'
+            - name: TOKEN
+              value: 'asghwegalkjerhghoaier0439845!'

@@ -1,15 +1,16 @@
 import pika
 import json
+from os import environ
 
 class MQService:
 
     def __init__(self):
 
         # TODO: Change from config file over to os.environment
-        RABBIT = 'localhost'
-        RABBIT_USER = 'guest'
-        RABBIT_PASS = 'guest'
-        RABBIT_VHOST = '/'
+        RABBIT = environ['RHOST']
+        RABBIT_USER = environ['RUSER']
+        RABBIT_PASS = environ['RPASS']
+        RABBIT_VHOST = environ['RVHOST']
 
         credentials = pika.PlainCredentials(RABBIT_USER, RABBIT_PASS)
         self.connection = pika.BlockingConnection(pika.ConnectionParameters(RABBIT, 5672, RABBIT_VHOST, credentials))
