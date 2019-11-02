@@ -12,10 +12,11 @@ app = Flask(__name__)
 schema = {
     'type': 'object',
     'properties': {
+        'version': {'type': 'number'},
         'sound_type': {'type': 'string'},
         'parameters': {'type': 'object'}
     },
-    'required': ['sound_type', 'parameters']
+    'required': ['version', 'sound_type', 'parameters']
 }
 
 # POST new job
