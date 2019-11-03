@@ -5,7 +5,7 @@ import os
 import re
 
 from Repositories.SampleRepository import SampleRepository
-from test.TestLog.TestLog import TestLog
+from tests.TestLog.TestLog import TestLog
 
 env_var = {
     'RABBIT': 'localhost',
@@ -17,7 +17,7 @@ env_var = {
 os.chdir('../../')
 log = TestLog()
 
-class TestModelRepo(TestCase):
+class test_ModelRepo(TestCase):
 
     @patch.dict('Repositories.SampleRepository.os.environ', env_var)
     def setUp(self):
@@ -44,7 +44,7 @@ class TestModelRepo(TestCase):
 
     def test_cont(self):
 
-        lis = self.repo.getSampleSet()
+        lis = self.repo.getSampleSet(1)
         self.assertTrue('names' in lis)
 
 

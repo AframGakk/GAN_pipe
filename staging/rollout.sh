@@ -14,3 +14,6 @@
 
 kubectl scale deployment ingestion-service --replicas=0
 kubectl scale deployment ingestion-service --replicas=1
+
+kubectl scale deployment controller-service --replicas=0
+kubectl scale deployment controller-service --replicas=1
