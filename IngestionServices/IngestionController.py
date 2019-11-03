@@ -21,11 +21,18 @@ class IngestionController:
         credentials = pika.PlainCredentials(RABBIT_USER, RABBIT_PASS)
         self.connection = pika.BlockingConnection(pika.ConnectionParameters(RABBIT, 5672, '/', credentials))
         self.channel = self.connection.channel()
-        self.ingestion_queue = 'ml.raw_ingest'
-        self.feature_queue = 'ml.feature_service'
+
+        # Queues
+        self.ingestion_queue = 'gan.training.ingestion'
+
+        # Keys
+        self.feature_key = 'ml.feature_service'
+
 
         # Declare the queue, if it doesn't exist
         self.channel.queue_declare(queue=self.ingestion_queue, durable=True)
+        self.channel.queue_declare(queue=self.feature_key, durable=True)
+
         self.channel.basic_consume(queue=self.ingestion_queue, on_message_callback=self.RawIngestionCallback, auto_ack=True)
 
     def consume(self):
@@ -40,9 +47,9 @@ class IngestionController:
             logger.error(__name__, 'Body is not json compatable in broker callback')
             return
 
-        ingestionService.convertRawToRecordDataLocal()
+        ingestionService.convertRawToRecordData(body_obj['sound_type'], body_obj['version'])
 
-        self.channel.basic_publish(exchange='', routing_key=self.feature_queue, body=body)
+        self.channel.basic_publish(exchange='', routing_key=self.feature_key, body=body)
 
 if __name__ == '__main__':
     controller = IngestionController()
