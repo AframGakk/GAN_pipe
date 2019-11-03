@@ -3,20 +3,21 @@ from unittest.mock import patch
 import os
 from services.plots.plots import plot_audio
 
+os.chdir('../../')
+
 from services.FeatureEngineeringService.FeatureEngineeringService import FeatureEngineeringService
 from Config.FeatureConfig import FeatureConfig
 from services.Log.Log import Log
-from tests.unit.mock_returns import get_records
+#from tests.unit.mock_returns import get_records
 
-def getRecordsMock(self, label, version):
-    return get_records
+#def getRecordsMock(self, label, version):
+#    return get_records
 
-os.chdir('../../')
 log = Log()
 
 class test_ClientRepo(TestCase):
 
-    @patch('repositories.RecordRepo.RecordRepo.getRecords', getRecordsMock)
+    #@patch('repositories.RecordRepo.RecordRepo.getRecords', getRecordsMock)
     def setUp(self):
         self.service = FeatureEngineeringService()
 
@@ -26,7 +27,7 @@ class test_ClientRepo(TestCase):
 
 
     def test_get_local_record(self):
-        label = 'KICK'
+        label = 1
         version = 1
         frame = self.service.getRecordDataframe(label, version)
         self.assertTrue('types' in frame)
@@ -35,16 +36,15 @@ class test_ClientRepo(TestCase):
 
 
     def test_prepare_audiofeatures(self):
-        config = FeatureConfig()
-        label = 'KICK'
+        label = 1
         version = 1
         dataframe = self.service.getRecordDataframe(label, version)
-        features = self.service.prepare_audiofeatures(dataframe, config)
+        features = self.service.prepare_audiofeatures(dataframe)
         self.assertEqual(dataframe.shape[0], len(features))
 
 
     def test_prepare_targetlabels(self):
-        label = 'KICK'
+        label = 1
         version = 1
         dataframe = self.service.getRecordDataframe(label, version)
         undersampled = self.service._undersampling(dataframe, label)
@@ -57,7 +57,7 @@ class test_ClientRepo(TestCase):
 
     def test_normalizing_features(self):
         config = FeatureConfig()
-        label = 'KICK'
+        label = 1
         version = 1
         dataframe = self.service.getRecordDataframe(label, version)
         features = self.service.prepare_audiofeatures(dataframe, config)
@@ -71,14 +71,14 @@ class test_ClientRepo(TestCase):
         should return a new dataframe with 50% KICK data and rest an equal mix of others.
         :return:
         '''
-        label = 'KICK'
+        label = 1
         version = 1
         dataframe = self.service.getRecordDataframe(label, version)
         undersampled = self.service._undersampling(dataframe, label)
         self.assertAlmostEqual(undersampled[undersampled['types'] == label].shape[0], undersampled[undersampled['types'] != label].shape[0])
 
     def test_train_test_split(self):
-        label = 'KICK'
+        label = 1
         version = 1
         dataframe = self.service.getRecordDataframe(label, version)
         undersampled = self.service._undersampling(dataframe, label)
@@ -93,7 +93,7 @@ class test_ClientRepo(TestCase):
 
 
     def test_transform_features(self):
-        label = 'KICK'
+        label = 1
         version = 1
 
         self.service.transformFeatures(label, version)
@@ -103,6 +103,8 @@ class test_ClientRepo(TestCase):
         self.assertTrue(os.path.isfile('./tmp/target_train.npy'))
         self.assertTrue(os.path.isfile('./tmp/target_test.npy'))
 
+    def test_cleanup_tmp(self):
+        self.service._cleanup_tmp()
 
 
 
