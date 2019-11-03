@@ -1,0 +1,6 @@
+flask
+psycopg2-binary
+pandas
+flask_sqlalchemy
+pika
+google-api-python-client

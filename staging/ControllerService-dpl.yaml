@@ -1,0 +1,42 @@
+# This file configures the hello-world app which serves public web traffic.
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: controller-service
+# namespace: cepstralinstruments
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: controller-service
+  template:
+    metadata:
+      labels:
+        app: controller-service
+    spec:
+      containers:
+        - name: controller-service
+          image: gcr.io/samplergan/controller-service:latest
+          env:
+            - name: RHOST
+              value: '10.27.240.87'
+            - name: RUSER
+              value: 'admin'
+            - name: RPASS
+              value: 'aframgakk19'
+            - name: RVHOST
+              value: '/'
+            - name: TRAINER
+              value: '153671080191723390'
+            - name: ZONE
+              value: 'us-west1-b'
+            - name: PROJECT_ID
+              value: 'samplergan'
+            - name: PGHOST
+              value: '34.89.28.185'
+            - name: PGDATABASE
+              value: 'ml-pipe-database'
+            - name: PGUSER
+              value: 'villi'
+            - name: PGPASSWORD
+              value: 'aframgakk19'
