@@ -8,7 +8,6 @@ logger = Log(file_handler=True, file='./logs/logs.log')
 class SampleRepository:
 
     def __init__(self):
-        self.repo_local = '../Data/wisebeat/raw_sound_repo/'
         self.BUCKET = BucketConnector('wisebeat-raw-sound-storage').getConnection()
 
 
@@ -35,11 +34,10 @@ class SampleRepository:
                 record_object['locations'].append(os.path.join(os.path.join(os.path.abspath(self.repo_local), type, file)))
                 record_object['types'].append(type)
 
-
         return record_object
 
 
-    def getSampleSet(self):
+    def getSampleSet(self, sound_type):
 
         record_object = {
             'names': [],
@@ -50,16 +48,16 @@ class SampleRepository:
         all_blobs = self.BUCKET.list_blobs()
 
         for item in all_blobs:
-            tmp = item.name.split('/')
-            type = tmp[0]
-            name = tmp[1]
+            #tmp = item.name.split('/')
+            #type = tmp[0]
+            #name = tmp[1]
 
-            if not re.match(r'.*wav$', name):
+            if not re.match(r'.*wav$', item.name):
                 continue
 
-            location = 'gs://wisebeat-raw-sound-storage' + '/' + item.name
-            record_object['names'].append(name)
-            record_object['types'].append(type)
+            location = item.name
+            record_object['names'].append(item.name)
+            record_object['types'].append(sound_type)
             record_object['locations'].append(location)
 
         return record_object

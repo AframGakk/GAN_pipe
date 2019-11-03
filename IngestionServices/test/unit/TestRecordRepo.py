@@ -5,7 +5,7 @@ import os
 
 from Repositories.RecordRepository import RecordRepository
 from Repositories.SampleRepository import SampleRepository
-from test.TestLog.TestLog import TestLog
+from tests.TestLog.TestLog import TestLog
 
 env_var = {
     'RABBIT': 'localhost',
@@ -36,6 +36,6 @@ class TestRecordRepo(TestCase):
 
     def test_cont(self):
         sampleRepo = SampleRepository()
-        record_data = sampleRepo.getSampleSet()
+        record_data = sampleRepo.getSampleSet(1)
         log.info(record_data)
-        self.repo.saveRecordData(record_data)
+        self.repo.saveRecordData(record_data, 1, 1)
