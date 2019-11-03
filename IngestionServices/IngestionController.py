@@ -26,7 +26,7 @@ class IngestionController:
         self.ingestion_queue = 'gan.training.ingestion'
 
         # Keys
-        self.feature_key = 'ml.feature_service'
+        self.feature_key = 'gan.training.features'
 
 
         # Declare the queue, if it doesn't exist
@@ -41,6 +41,7 @@ class IngestionController:
         self.channel.start_consuming()
 
     def RawIngestionCallback(self, ch, method, properties, body):
+        print('Ingestion called')
         try:
             body_obj = json.loads(body)
         except Exception as ex:

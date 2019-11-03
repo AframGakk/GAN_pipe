@@ -22,7 +22,7 @@ class FeatureController:
         self.feature_queue = 'gan.training.features'
 
         # Keys
-        self.controller_key = 'gan.training.controller'
+        self.controller_key = 'gan.training.features.controller'
 
         # Declare the queue, if it doesn't exist
         self.channel.queue_declare(queue=self.feature_queue, durable=True)
@@ -33,6 +33,7 @@ class FeatureController:
 
 
     def ingestionCallback(self, ch, method, properties, body):
+        print('Feature Callback')
         try:
             training_info = json.loads(body)
         except:
@@ -40,6 +41,7 @@ class FeatureController:
 
         _fService.transformFeatures(training_info['sound_type'], training_info['version'])
         self.channel.basic_publish(exchange='', routing_key=self.controller_key, body=body)
+
 
 
     def consume(self):

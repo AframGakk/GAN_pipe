@@ -30,11 +30,11 @@ class Controller:
         # The queues
         self.scheduling_queue = 'gan.training.schedule'
         self.retrieve_queue = 'gan.training.retrieval'
-        self.feature_queue = 'gan.training.features'
+        self.feature_queue = 'gan.training.features.controller'
 
         # Publish keys
-        self.training_key = 'gan.train.GPU'
-        self.ingestion_key = 'gan.train.ingestion'
+        self.training_key = 'gan.training.GPU'
+        self.ingestion_key = 'gan.training.ingestion'
         self.deployment_key = 'gan.training.deploy'  # The deployment queue
 
         # Declare the queue, if it doesn't exist
@@ -81,6 +81,7 @@ class Controller:
 
 
     def featureEngineeringCallback(self, ch, method, props, body):
+        print('Callback from feature engineering')
         try:
             info_obj = json.loads(body)
         except:

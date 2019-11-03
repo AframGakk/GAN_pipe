@@ -36,6 +36,6 @@ class DataIngestionService:
 
         bucket_obj = sampleRepo.getSampleSet(sound_type)
         #logger.info(__name__, bucket_obj)
-        recordRepo.saveRecordData(bucket_obj)
+        recordRepo.saveRecordData(bucket_obj, sound_type, version)
 
 
