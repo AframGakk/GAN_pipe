@@ -19,8 +19,10 @@ class test_ClientRepo(TestCase):
         self.assertTrue(self.repo)
 
     def test_getRecords(self):
-        label = 'KICK'
+        label = 1
         version = 1
         data = self.repo.getRecords(label, version)
+
+
 
         self.assertTrue(data)

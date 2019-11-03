@@ -8,7 +8,7 @@ class FeatureDataRepo:
         self.BUCKET = storage.Client().bucket('wisebeat-feature-storage')
 
     def save_featuredata_local(self, train, test):
-        repo_dir = '../data/wisebeat/feature_data_storage/'
+        repo_dir = './tmp/'
         train_file = repo_dir + 'train/train'
         test_file = repo_dir + 'test/test'
 
@@ -16,7 +16,7 @@ class FeatureDataRepo:
         np.save(test_file, test)
 
     def saveDataToBucket(self, local_file, bFilename, label, version):
-        filepath = '{}_{}/{}'.format(label, version, bFilename)
+        filepath = '{}/{}/{}'.format(label, version, bFilename)
         blob = self.BUCKET.blob(filepath)
         blob.upload_from_filename(local_file)
 
