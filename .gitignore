@@ -12,3 +12,4 @@ FeatureExploration/images/*
 *.ini
 *.npy
 
+*.h5

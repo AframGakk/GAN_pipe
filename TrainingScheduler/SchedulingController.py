@@ -43,5 +43,10 @@ def job_request():
         return json.dumps({ 'success': True })
 
 
+@app.route('/', methods = ['GET'])
+def status():
+    return 'Running'
+
+
 if __name__ == '__main__':
     app.run(debug=False, port=5007)

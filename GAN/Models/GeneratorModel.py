@@ -1,8 +1,9 @@
 from keras.optimizers import Adam
+from keras.backend import expand_dims
 from keras.models import Sequential
-from keras.layers import (Layer, Input, Flatten, Dropout, BatchNormalization, Reshape,
+from keras.layers import (Layer, Lambda,Input, Flatten, Dropout, BatchNormalization, Reshape,
                           MaxPool1D, AveragePooling1D, AveragePooling2D, GlobalAveragePooling1D, GlobalAveragePooling2D,
-                          Convolution1D, Conv2DTranspose, Conv1D, Dense, LeakyReLU, ReLU, Activation,
+                          Convolution1D, Conv2DTranspose, Conv1D, Conv2D, Dense, LeakyReLU, ReLU, Activation, UpSampling2D,
                           LSTM, SimpleRNNCell)
 
 import tensorflow as tf
@@ -35,13 +36,6 @@ def conv1d_transpose(inputs, filters, kernel_width, stride=4, padding='same', up
         raise NotImplementedError
 
 
-def Conv1DTranspose(input_tensor, filters, kernel_size, strides=2, padding='same'):
-    x = Lambda(lambda x: K.expand_dims(x, axis=2))(input_tensor)
-    x = Conv2DTranspose(filters=filters, kernel_size=(kernel_size, 1), strides=(strides, 1), padding=padding)(x)
-    x = Lambda(lambda x: K.squeeze(x, axis=2))(x)
-    return x
-
-
 class GenModel:
     def __init__(self):
 
@@ -66,42 +60,37 @@ class GenModel:
         # [100] -> [16, 1024]
         dim_mul = 16
         output = input
-        with tf.variable_scope('z_project'):
-            output = tf.layers.dense(output, 4 * 4 * dim * dim_mul)
-            output = tf.reshape(output, [batch_size, 16, dim * dim_mul])
-            output = batchnorm(output)
+        output = tf.layers.dense(output, 4 * 4 * dim * dim_mul)
+        output = tf.reshape(output, [batch_size, 16, dim * dim_mul])
+        output = batchnorm(output)
         output = tf.nn.relu(output)
         dim_mul //= 2
 
         # Layer 0
         # [16, 1024] -> [64, 512]
-        with tf.variable_scope('upconv_0'):
-            output = conv1d_transpose(output, dim * dim_mul, kernel_len, 4, upsample=upsample)
-            output = batchnorm(output)
+        output = conv1d_transpose(output, dim * dim_mul, kernel_len, 4, upsample=upsample)
+        output = batchnorm(output)
         output = tf.nn.relu(output)
         dim_mul //= 2
 
         # Layer 1
         # [64, 512] -> [256, 256]
-        with tf.variable_scope('upconv_1'):
-            output = conv1d_transpose(output, dim * dim_mul, kernel_len, 4, upsample=upsample)
-            output = batchnorm(output)
+        output = conv1d_transpose(output, dim * dim_mul, kernel_len, 4, upsample=upsample)
+        output = batchnorm(output)
         output = tf.nn.relu(output)
         dim_mul //= 2
 
         # Layer 2
         # [256, 256] -> [1024, 128]
-        with tf.variable_scope('upconv_2'):
-            output = conv1d_transpose(output, dim * dim_mul, kernel_len, 4, upsample=upsample)
-            output = batchnorm(output)
+        output = conv1d_transpose(output, dim * dim_mul, kernel_len, 4, upsample=upsample)
+        output = batchnorm(output)
         output = tf.nn.relu(output)
         dim_mul //= 2
 
         # Layer 3
         # [1024, 128] -> [4096, 64]
-        with tf.variable_scope('upconv_3'):
-            output = conv1d_transpose(output, dim * dim_mul, kernel_len, 4, upsample=upsample)
-            output = batchnorm(output)
+        output = conv1d_transpose(output, dim * dim_mul, kernel_len, 4, upsample=upsample)
+        output = batchnorm(output)
         output = tf.nn.relu(output)
 
         # Layer 4
@@ -135,35 +124,187 @@ class GenModel:
         #self.model.
 
 
-class GeneratorModel:
+
+
+
+class GeneratorModel_v2:
     def __init__(self):
-        dim_mul = 16
         dim = 64
-        output = (64, 100)
-        kernel_len = 25
+        dim_mul = 16
+
+        model = Sequential()
 
         # [100] -> [16, 1024]
-        #model = Sequential()
-        #model.add(Dense((output, 4 * 4 * dim * dim_mul), input_shape=(100,)))
-        #model.add(Reshape(output, [64, 16, dim * dim_mul]))
-        #model.add(BatchNormalization(output))
-        #model.add(ReLU())
-        #output = Input(batch_shape=output)
-        #output = Convolution1D(64, 10, input_shape=(100, ))
-        output = Dense(4 * 4 * dim * dim_mul)(output)
-        output = Reshape([64, 16, dim * dim_mul])(output)
-        output = BatchNormalization()(output)
-        output = ReLU()(output)
-
+        model.add(Dense(4 * 4 * dim * dim_mul, input_shape=(100,)))
+        model.add(LeakyReLU(alpha=0.01))
+        model.add(BatchNormalization(momentum=0.9))
+        model.add(Reshape((16, dim * dim_mul)))
+        #model.add(Reshape([64, 16, dim * dim_mul]))
         dim_mul //= 2
 
         # [16, 1024] -> [64, 512]
-        output = conv1d_transpose(output, dim * dim_mul, kernel_len, 4, upsample='zeros')
-        output = BatchNormalization(output)
-        output = ReLU(output)
+        model.add(Conv1D(dim * dim_mul, 25, strides=4, padding='same'))
 
+        #model.add(Conv2DTranspose(dim * dim_mul, (1, 25), strides=(1, 4), padding='same'))
+        model.add(ReLU())
+        model.add(BatchNormalization(momentum=0.9))
+        model.add(Dropout(rate=0.1))
+        #model.add(Reshape((64, dim * dim_mul)))
         dim_mul //= 2
 
+        # [64, 512] -> [256, 256]
+        model.add(Conv1D(dim * dim_mul, 25, strides=4, padding='same'))
+        model.add(ReLU())
+        model.add(BatchNormalization(momentum=0.9))
+        model.add(Dropout(rate=0.1))
+        model.add(Reshape((256, dim * dim_mul)))
+        dim_mul //= 2
+
+        # [256, 256] -> [1024, 128]
+        model.add(Conv1D(dim * dim_mul, 25, padding='same'))
+        model.add(ReLU())
+        model.add(BatchNormalization(momentum=0.9))
+        model.add(Dropout(rate=0.1))
+        dim_mul //= 2
+
+        # [1024, 128] -> [4096, 128]
+        model.add(Conv1D(dim * dim_mul, 25, padding='same'))
+        model.add(ReLU())
+        model.add(BatchNormalization(momentum=0.9))
+        model.add(Dropout(rate=0.1))
+
+        # [4096, 64] -> [16384, nch]
+        model.add(Conv1D(1, 4, padding='same'))
+        model.add(Dropout(rate=0.3))
+        model.add(Flatten())
+
+        self.model = model
+
+
+
+
+
+class GeneratorModel_v3:
+    def __init__(self, input):
+        dim = 64
+        dim_mul = 16
+
+        model = Sequential()
+
+        output = input
+
+        # [100] -> [16, 1024]
+        #model.add(Dense(4 * 4 * dim * dim_mul, input_shape=(100,)))
+        output = Dense(4 * 4 * dim * dim_mul, input_shape=(100,))(output)
+        #model.add(LeakyReLU(alpha=0.01))
+        #model.add(BatchNormalization(momentum=0.9))
+        output = BatchNormalization(momentum=0.9)(output)
+        #model.add(Reshape((16, dim * dim_mul)))
+        output = Reshape()
+        #model.add(Reshape([64, 16, dim * dim_mul]))
+        dim_mul //= 2
+
+
+
+
+        # [16, 1024] -> [64, 512]
+        #model.add(Conv1D(dim * dim_mul, 25, strides=4, padding='same'))
+        model.add(Conv2DTranspose(dim * dim_mul, (1, 25), strides=(1, 4), padding='same'))
+        model.add(ReLU())
+        model.add(BatchNormalization(momentum=0.9))
+        model.add(Dropout(rate=0.1))
+        #model.add(Reshape((64, dim * dim_mul)))
+        dim_mul //= 2
+
+        # [64, 512] -> [256, 256]
+        model.add(Conv1D(dim * dim_mul, 25, strides=4, padding='same'))
+        model.add(ReLU())
+        model.add(BatchNormalization(momentum=0.9))
+        model.add(Dropout(rate=0.1))
+        model.add(Reshape((256, dim * dim_mul)))
+        dim_mul //= 2
+
+        # [256, 256] -> [1024, 128]
+        model.add(Conv1D(dim * dim_mul, 25, padding='same'))
+        model.add(ReLU())
+        model.add(BatchNormalization(momentum=0.9))
+        model.add(Dropout(rate=0.1))
+        dim_mul //= 2
+
+        # [1024, 128] -> [4096, 128]
+        model.add(Conv1D(dim * dim_mul, 25, padding='same'))
+        model.add(ReLU())
+        model.add(BatchNormalization(momentum=0.9))
+        model.add(Dropout(rate=0.1))
+
+        # [4096, 64] -> [16384, nch]
+        model.add(Conv1D(1, 4, padding='same'))
+        model.add(Dropout(rate=0.3))
+        model.add(Flatten())
+
+        self.model = model
+
+class GeneratorModel:
+    def __init__(self):
+
+        noise_dim = 100
+
+        model = Sequential()
+        model.add(Dense(1000, input_shape=(noise_dim,)))
+        model.add(BatchNormalization(momentum=0.9))
+        model.add(LeakyReLU(alpha=0.01))
+        model.add(Reshape((1000, 1)))
+
+        model.add(Conv1D(4, 20, padding='same'))
+        model.add(BatchNormalization(momentum=0.9))
+        model.add(ReLU())
+        model.add(Dropout(rate=0.1))
+
+        model.add(Conv1D(8, 25, padding='same'))
+        model.add(BatchNormalization(momentum=0.9))
+        model.add(ReLU())
+        model.add(Dropout(rate=0.1))
+
+        model.add(Conv1D(16, 50, padding='same'))
+        model.add(BatchNormalization(momentum=0.9))
+        model.add(ReLU())
+        model.add(Dropout(rate=0.1))
+
+        model.add(Conv1D(16, 100, padding='same'))
+        model.add(Dropout(rate=0.3))
+        model.add(Flatten())
+
+        self.model = model
+
+class GeneratorModel_v3:
+    def __init__(self):
+        D = 64
+
+        model = Sequential()
+
+        model.add(Dense(256 * D, input_dim=100))
+        model.add(Reshape((4, 4, 16 * D)))
+        model.add(Activation('relu'))
+
+        model.add(UpSampling2D(size=(2, 2)))
+        model.add(Conv2D(8 * D, (5, 5), padding='same'))
+        model.add(Activation('relu'))
+
+        model.add(UpSampling2D(size=(2, 2)))
+        model.add(Conv2D(4 * D, (5, 5), padding='same'))
+        model.add(Activation('relu'))
+
+        model.add(UpSampling2D(size=(2, 2)))
+        model.add(Conv2D(2 * D, (5, 5), padding='same'))
+        model.add(Activation('relu'))
+        model.add(Conv2D(D, (5, 5), padding='same'))
+
+        model.add(UpSampling2D(size=(2, 2)))
+        model.add(Activation('relu'))
+
+        model.add(UpSampling2D(size=(2, 2)))
+        model.add(Conv2D(2, (5, 5), padding='same'))
+        model.add(Activation('tanh'))
 
 
 # OLD MODEL

@@ -1,0 +1,16 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: main-ingress
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /*
+        backend:
+          serviceName: training-scheduler-service
+          servicePort: 5007
+      - path: /admin/training/job
+        backend:
+          serviceName: training-scheduler-service
+          servicePort: 5007

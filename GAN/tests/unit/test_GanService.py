@@ -31,3 +31,4 @@ class test_GanService(TestCase):
         z = tf.random.uniform([64, 100], -1., 1., dtype=tf.float32)
 
         name = ''
+

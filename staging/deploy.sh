@@ -22,3 +22,15 @@
 # Ingestion service deployment
 kubectl apply -f ./staging/IngestionService-dpl.yaml
 
+# Ingestion service deployment
+kubectl apply -f ./staging/TrainingScheduler-dpl.yaml
+kubectl apply -f ./staging/TrainingScheduler-srv.yaml
+
+# Ingestion service deployment
+kubectl apply -f ./staging/ControllerService-dpl.yaml
+
+# Feature engineering deployment
+kubectl apply -f ./staging/FeatureEngineering-dpl.yaml
+
+# Ingress
+kubectl apply -f ./staging/ingress.yaml

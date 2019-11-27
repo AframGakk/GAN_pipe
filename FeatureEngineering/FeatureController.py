@@ -9,10 +9,10 @@ _fService = FeatureEngineeringService()
 class FeatureController:
 
     def __init__(self):
-        RABBIT = 'localhost'#environ['RHOST']
-        RABBIT_USER = 'guest'#environ['RUSER']
-        RABBIT_PASS = 'guest'#environ['RPASS']
-        RABBIT_VHOST = '/'#environ['RVHOST']
+        RABBIT = environ['RHOST']
+        RABBIT_USER = environ['RUSER']
+        RABBIT_PASS = environ['RPASS']
+        RABBIT_VHOST = environ['RVHOST']
 
         credentials = pika.PlainCredentials(RABBIT_USER, RABBIT_PASS)
         self.connection = pika.BlockingConnection(pika.ConnectionParameters(RABBIT, 5672, RABBIT_VHOST, credentials))

@@ -19,10 +19,12 @@ spec:
           image: gcr.io/samplergan/training-scheduler:latest
           env:
             - name: RHOST
-              value: '10.27.240.87'
+              value: 'rabbit-mq-service'
             - name: RUSER
-              value: 'admin'
+              value: 'guest'
             - name: RPASS
-              value: 'aframgakk19'
+              value: 'guest'
+            - name: RVHOST
+              value: '/'
             - name: TOKEN
               value: 'asghwegalkjerhghoaier0439845!'

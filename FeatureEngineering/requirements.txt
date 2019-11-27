@@ -4,4 +4,6 @@ librosa
 pandas
 google-cloud-storage
 pika
+Cython
+sndfile
 

@@ -1,0 +1,10 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: training-scheduler-service
+spec:
+  type: NodePort
+  selector:
+    app: training-scheduler
+  ports:
+    - port: 5007

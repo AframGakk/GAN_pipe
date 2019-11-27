@@ -14,16 +14,23 @@ spec:
       labels:
         app: controller-service
     spec:
+      volumes:
+        - name: google-cloud-key
+          secret:
+            secretName: controller-service-account
       containers:
         - name: controller-service
           image: gcr.io/samplergan/controller-service:latest
+          volumeMounts:
+            - name: google-cloud-key
+              mountPath: /var/secrets/google
           env:
             - name: RHOST
-              value: '10.27.240.87'
+              value: 'rabbit-mq-service'
             - name: RUSER
-              value: 'admin'
+              value: 'guest'
             - name: RPASS
-              value: 'aframgakk19'
+              value: 'guest'
             - name: RVHOST
               value: '/'
             - name: TRAINER
@@ -40,3 +47,5 @@ spec:
               value: 'villi'
             - name: PGPASSWORD
               value: 'aframgakk19'
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: /var/secrets/google/key.json

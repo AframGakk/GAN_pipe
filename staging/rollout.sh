@@ -17,3 +17,10 @@ kubectl scale deployment ingestion-service --replicas=1
 
 kubectl scale deployment controller-service --replicas=0
 kubectl scale deployment controller-service --replicas=1
+
+kubectl scale deployment training-scheduler --replicas=0
+kubectl scale deployment training-scheduler --replicas=1
+
+kubectl scale deployment feature-engineering --replicas=0
+kubectl scale deployment feature-engineering --replicas=1
+
