@@ -34,7 +34,7 @@ class GanService:
         self.generatorLossHistory = []
         self.discriminatorLossHistory = []
 
-    def train(self, epochs=10, batch = 64):
+    def train(self, epochs=1000000, batch = 64):
         epoch = 0
         for epoch in range(epochs):
         #while True:
