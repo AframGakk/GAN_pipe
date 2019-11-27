@@ -73,7 +73,7 @@ class GanService:
             g_loss_mean = np.mean(g_loss)
             self.generatorLossHistory.append(g_loss_mean)
 
-            if epoch % 2 == 0:
+            if epoch % 100 == 0:
                 print("epoch: %d" % (epoch))
                 print("Discriminator_loss: %f, Generator_loss: %f" % (d_loss_mean, g_loss_mean))
                 self.plot_losses(epoch, bucket_save=True)
