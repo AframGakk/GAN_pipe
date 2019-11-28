@@ -56,7 +56,7 @@ class test_GeneratorModel(TestCase):
 
     def test_load_model(self):
 
-        g_location = './tmp/generator/model.h5'
+        g_location = './tmp/model.h5'
         wav_location = './tmp/sample.wav'
         noise = np.random.normal(0, 1, (1, 100))
 

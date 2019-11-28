@@ -4,7 +4,7 @@ import numpy as np
 import soundfile as sf
 import tensorflow as tf
 
-#from Services.GanService import GanService
+from Services.GanService import GanService
 
 os.chdir('../../')
 
@@ -31,4 +31,12 @@ class test_GanService(TestCase):
         z = tf.random.uniform([64, 100], -1., 1., dtype=tf.float32)
 
         name = ''
+
+    def test_run_training(self):
+        gan = GanService()
+
+        gan.train_old(epochs=10, batch=64)
+
+
+
 

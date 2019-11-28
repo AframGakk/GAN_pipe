@@ -13,3 +13,4 @@ FeatureExploration/images/*
 *.npy
 
 *.h5
+*.png

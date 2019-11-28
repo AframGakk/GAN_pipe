@@ -40,6 +40,3 @@ class test_GeneratorModel(TestCase):
 
 
 
-
-
-

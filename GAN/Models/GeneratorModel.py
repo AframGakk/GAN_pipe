@@ -249,6 +249,11 @@ class GeneratorModel:
 
         noise_dim = 100
 
+        '''
+        Last Step
+        no strides
+        '''
+
         model = Sequential()
         model.add(Dense(1000, input_shape=(noise_dim,)))
         model.add(BatchNormalization(momentum=0.9))
@@ -257,17 +262,17 @@ class GeneratorModel:
 
         model.add(Conv1D(4, 20, padding='same'))
         model.add(BatchNormalization(momentum=0.9))
-        model.add(ReLU())
+        model.add(LeakyReLU(alpha=0.01))
         model.add(Dropout(rate=0.1))
 
         model.add(Conv1D(8, 25, padding='same'))
         model.add(BatchNormalization(momentum=0.9))
-        model.add(ReLU())
+        model.add(LeakyReLU(alpha=0.01))
         model.add(Dropout(rate=0.1))
 
         model.add(Conv1D(16, 50, padding='same'))
         model.add(BatchNormalization(momentum=0.9))
-        model.add(ReLU())
+        model.add(LeakyReLU(alpha=0.01))
         model.add(Dropout(rate=0.1))
 
         model.add(Conv1D(16, 100, padding='same'))
