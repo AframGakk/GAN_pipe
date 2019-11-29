@@ -205,8 +205,6 @@ class GeneratorModel_v3:
         dim_mul //= 2
 
 
-
-
         # [16, 1024] -> [64, 512]
         #model.add(Conv1D(dim * dim_mul, 25, strides=4, padding='same'))
         model.add(Conv2DTranspose(dim * dim_mul, (1, 25), strides=(1, 4), padding='same'))
@@ -245,7 +243,7 @@ class GeneratorModel_v3:
         self.model = model
 
 class GeneratorModel:
-    def __init__(self):
+    def __init__(self, alpha=0.2):
 
         noise_dim = 100
 
@@ -257,22 +255,22 @@ class GeneratorModel:
         model = Sequential()
         model.add(Dense(1000, input_shape=(noise_dim,)))
         model.add(BatchNormalization(momentum=0.9))
-        model.add(LeakyReLU(alpha=0.01))
+        model.add(LeakyReLU(alpha=alpha))
         model.add(Reshape((1000, 1)))
 
         model.add(Conv1D(4, 20, padding='same'))
         model.add(BatchNormalization(momentum=0.9))
-        model.add(LeakyReLU(alpha=0.01))
+        model.add(LeakyReLU(alpha=alpha))
         model.add(Dropout(rate=0.1))
 
         model.add(Conv1D(8, 25, padding='same'))
         model.add(BatchNormalization(momentum=0.9))
-        model.add(LeakyReLU(alpha=0.01))
+        model.add(LeakyReLU(alpha=alpha))
         model.add(Dropout(rate=0.1))
 
         model.add(Conv1D(16, 50, padding='same'))
         model.add(BatchNormalization(momentum=0.9))
-        model.add(LeakyReLU(alpha=0.01))
+        model.add(LeakyReLU(alpha=alpha))
         model.add(Dropout(rate=0.1))
 
         model.add(Conv1D(16, 100, padding='same'))

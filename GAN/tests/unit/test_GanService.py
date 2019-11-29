@@ -35,7 +35,7 @@ class test_GanService(TestCase):
     def test_run_training(self):
         gan = GanService()
 
-        gan.train_old(epochs=10, batch=64)
+        gan.train(epochs=10)
 
 
 

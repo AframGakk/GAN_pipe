@@ -256,43 +256,35 @@ class DiscriminatorModel_v1():
 
 
 class DiscriminatorModel():
-    def __init__(self):
+    def __init__(self, alpha=0.2):
         InputShape = 16000
         input_dim = 32
-        '''
-        Last Step
-        stride
-            7
-            5
-            3
-        '''
-
 
         model = Sequential()
 
         model.add(Reshape((InputShape, 1), input_shape=(InputShape,)))
         model.add(Conv1D(input_dim, 100, strides=7, padding='valid'))
-        model.add(LeakyReLU(alpha=0.01))
+        model.add(LeakyReLU(alpha=alpha))
         model.add(AveragePooling1D(4))
         model.add(BatchNormalization(momentum=0.9))
         model.add(Dropout(rate=0.1))
         input_dim //= 2
 
         model.add(Conv1D(16, 50, strides=5, padding='valid'))
-        model.add(LeakyReLU(alpha=0.01))
+        model.add(LeakyReLU(alpha=alpha))
         model.add(BatchNormalization(momentum=0.9))
         model.add(Dropout(rate=0.1))
         input_dim //= 2
 
         model.add(Conv1D(8, 25, strides=3, padding='valid'))
-        model.add(LeakyReLU(alpha=0.01))
+        model.add(LeakyReLU(alpha=alpha))
         model.add(BatchNormalization(momentum=0.9))
         model.add(Dropout(rate=0.1))
         input_dim //= 2
 
         model.add(Flatten())
         model.add(Dense(1024))
-        model.add(LeakyReLU(alpha=0.01))
+        model.add(LeakyReLU(alpha=alpha))
         model.add(BatchNormalization(momentum=0.9))
         model.add(Dense(1, activation='sigmoid'))
 
