@@ -13,15 +13,16 @@ class ModelRepo:
         model.save(filelocation)
         return filelocation
 
-    def saveDataToBucket(self, model_name, model):
-        filepath = 'models/{}_model.h5'.format(model_name)
+    def saveDataToBucket(self, model_name, model, version, job_id):
+        filepath = '{}/{}/models/{}_model.h5'.format(version, job_id, model_name)
         blob = self.BUCKET.blob(filepath)
         local_file = self.save_model_local(model_name, model)
         blob.upload_from_filename(local_file)
+        return filepath
 
-    def saveFigureToBucket(self, filename):
+    def saveFigureToBucket(self, filename, version, job_id):
         local = './tmp/{}'.format(filename)
-        blob = self.BUCKET.blob('plots/{}'.format(filename))
+        blob = self.BUCKET.blob('{}/{}/plots/{}'.format(version, job_id,filename))
         blob.upload_from_filename(local)
 
     def saveSoundToBucket(self, location, epoch):

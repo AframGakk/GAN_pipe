@@ -30,10 +30,10 @@ class Controller:
         # The queues
         self.scheduling_queue = 'gan.training.schedule'
         self.retrieve_queue = 'gan.training.retrieval'
-        self.feature_queue = 'gan.training.features.controller'
+        self.feature_queue = 'gan.training.controller.records'
 
         # Publish keys
-        self.training_key = 'gan.training.GPU'
+        self.training_key = 'gan.training.CPU'
         self.ingestion_key = 'gan.training.ingestion'
         self.deployment_key = 'gan.training.deploy'  # The deployment queue
 
@@ -48,7 +48,7 @@ class Controller:
         self.channel.basic_consume(
             queue=self.retrieve_queue, on_message_callback=self.trainingRetrievalCallback, auto_ack=True)
         self.channel.basic_consume(
-            queue=self.feature_queue, on_message_callback=self.featureEngineeringCallback, auto_ack=True)
+            queue=self.feature_queue, on_message_callback=self.ingestionCallback, auto_ack=True)
 
 
     def trainingScheduleCallback(self, ch, method, props, body):
@@ -71,16 +71,26 @@ class Controller:
             print('Body does not contain enough info on Job: {}'.format(body))
             return
 
-        jobInput = JobInputModel(info_obj['version'] ,info_obj['sound_type'], ParameterInputModel(info_obj['parameters']['batch_size'], info_obj['parameters']['noise_dim']))
+        jobInput = JobInputModel(info_obj['label'],
+                                 info_obj['version'],
+                                 info_obj['sound_type'],
+                                 ParameterInputModel(
+                                     info_obj['parameters']['batch_size'],
+                                     info_obj['parameters']['adam_learning_rate'],
+                                     info_obj['parameters']['adam_beta'],
+                                     info_obj['parameters']['lrelu_alpha'],
+                                     info_obj['parameters']['episodes']
+                                 ),
+                                 info_obj['description']
+                                 )
         jobDto = _jobService.createJob(jobInput)
 
         if jobDto:
             #self.channel.basic_publish(exchange='', routing_key=self.training_key, body=jobDto.json())
-            print(jobDto.__dict__())
             self.channel.basic_publish(exchange='', routing_key=self.ingestion_key, body=jobDto.json())
 
 
-    def featureEngineeringCallback(self, ch, method, props, body):
+    def ingestionCallback(self, ch, method, props, body):
         print('Callback from feature engineering')
         try:
             info_obj = json.loads(body)
@@ -93,10 +103,21 @@ class Controller:
             print('Body does not contain enough info on Job: {}'.format(body))
             return
 
-        jobDto = JobDTO(info_obj['id'], info_obj['version'], info_obj['date_time_start'], info_obj['date_time_stop'],
-                        info_obj['model_location'], info_obj['data_location'], info_obj['sound_type'], info_obj['parameters'], info_obj['status'])
+        jobDto = JobDTO(info_obj['id'],
+                        info_obj['label'],
+                        info_obj['version'],
+                        info_obj['date_time_start'],
+                        info_obj['date_time_stop'],
+                        info_obj['model_location'],
+                        info_obj['record_location'],
+                        info_obj['sound_type'],
+                        info_obj['parameters'],
+                        info_obj['status'],
+                        info_obj['results'],
+                        info_obj['description'])
 
         jobDto = _jobService.deployJob(jobDto)
+        print(jobDto)
 
         if jobDto:
             self.channel.basic_publish(exchange='', routing_key=self.training_key, body=jobDto.json())
@@ -123,24 +144,36 @@ class Controller:
             print('Body does not contain enough info on Job: {}'.format(body))
             return
 
-        jobDto = JobDTO(info_obj['id'], info_obj['version'], info_obj['date_time_start'], info_obj['date_time_stop'],
-                        info_obj['model_location'], info_obj['data_location'], info_obj['sound_type'], info_obj['parameters'], info_obj['status'])
+        print(info_obj)
+
+        jobDto = JobDTO(info_obj['id'],
+                        info_obj['label'],
+                        info_obj['version'],
+                        info_obj['date_time_start'],
+                        info_obj['date_time_stop'],
+                        info_obj['model_location'],
+                        info_obj['record_location'],
+                        info_obj['sound_type'],
+                        info_obj['parameters'],
+                        info_obj['status'],
+                        info_obj['results'],
+                        info_obj['description'])
 
         jobDto = _jobService.jobRetrieval(jobDto)
 
-        if jobDto:
-            self.channel.basic_publish(exchange='', routing_key=self.deployment_key, body=jobDto.json())
+        #if jobDto:
+        #    self.channel.basic_publish(exchange='', routing_key=self.deployment_key, body=jobDto.json())
 
 
     def _validate_jobDto(self, jobDto):
-        if not ('id' in jobDto and 'version' in jobDto and 'date_time_start' in jobDto and 'date_time_stop' in jobDto
-                and 'model_location' in jobDto and 'data_location' in jobDto and 'sound_type' in jobDto and 'parameters' in jobDto and 'status' in jobDto):
+        if not ('id' in jobDto and 'label' in jobDto and 'version' in jobDto and 'date_time_start' in jobDto and 'date_time_stop' in jobDto
+                and 'model_location' in jobDto and 'record_location' in jobDto and 'sound_type' in jobDto and 'parameters' in jobDto and 'status' in jobDto):
             return False
         return True
 
 
     def _validate_jobInput(self, jobInput):
-        if not ('version' in jobInput and 'sound_type' in jobInput and 'parameters' in jobInput):
+        if not ('label' in jobInput and 'description' in jobInput and 'version' in jobInput and 'sound_type' in jobInput and 'parameters' in jobInput):
             return False
         return True
 

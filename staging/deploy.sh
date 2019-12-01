@@ -30,7 +30,7 @@ kubectl apply -f ./staging/TrainingScheduler-srv.yaml
 kubectl apply -f ./staging/ControllerService-dpl.yaml
 
 # Feature engineering deployment
-kubectl apply -f ./staging/FeatureEngineering-dpl.yaml
+kubectl apply -f ./staging/GanService-dpl.yaml
 
 # Ingress
 kubectl apply -f ./staging/ingress.yaml

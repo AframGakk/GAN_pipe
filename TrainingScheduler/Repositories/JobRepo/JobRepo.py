@@ -1,9 +1,12 @@
+from sqlalchemy import create_engine
+import traceback
 import configparser
 from datetime import datetime
 
 from Repositories.SqlConnector.SqlEngine import SqlEngine
 from Models.Entities.DataEntities import gan_parameters, sound_type, gan_job, job_results
 from Models.DTO.JobDTO import JobDTO
+
 
 config = configparser.ConfigParser()
 
@@ -20,9 +23,29 @@ class JobRepo:
         jobList = []
         job_returns = session.query(gan_job).all()
 
+        session = self.engine.session()
+
         for job in job_returns:
-            # TODO: make better
-            params = session.query(gan_parameters).filter(gan_parameters.id == id).scalar()
+            if job.parameters:
+                para = session.query(gan_parameters).filter(gan_parameters.id == job.parameters).scalar()
+                job.parameters = {
+                    'id': para.id,
+                    'batch_size': para.batch_size,
+                    'adam_learning_rate': float(para.adam_learning_rate),
+                    'adam_beta': float(para.adam_beta),
+                    'lrelu_alpha': float(para.lrelu_alpha),
+                    'episodes': para.episodes
+                }
+
+            if job.results:
+                res = session.query(job_results).filter(job_results.id == job.results).scalar()
+                job.results = {
+                    'id': res.id,
+                    'discriminator_loss': float(res.discriminator_loss),
+                    'generator_loss': float(res.generator_loss),
+                    'discriminator_accuracy': float(res.discriminator_accuracy),
+                    'generator_accuracy': float(res.generator_accuracy)
+                }
 
             jobList.append(JobDTO(job.id,
                                   job.label,
@@ -32,20 +55,13 @@ class JobRepo:
                                   job.model_location,
                                   job.record_location,
                                   job.sound_type,
-                                  {
-                                      'batch_size': params.batch_size,
-                                      'adam_learning_rate': params.adam_learning_rate,
-                                      'adam_beta': params.adam_beta,
-                                      'lrelu_alpha': params.lrelu_alpha,
-                                      'episodes': params.episodes
-                                  },
+                                  job.parameters,
                                   job.status,
                                   job.results,
                                   job.description
                                   ))
 
         return jobList
-
 
 
     def getJobById(self, id):
@@ -55,9 +71,30 @@ class JobRepo:
         :return: JobDTO, a data transfer object of Job
         '''
         session = self.engine.session()
-        job = session.query(gan_job).filter(gan_job.id == id).scalar()
-        params = session.query(gan_parameters).filter(gan_parameters.id == id).scalar()
 
+        job = session.query(gan_job).filter(gan_job.id == id).scalar()
+        if job.parameters:
+            para = session.query(gan_parameters).filter(gan_parameters.id == job.parameters).scalar()
+            job.parameters = {
+                'id': para.id,
+                'batch_size': para.batch_size,
+                'adam_learning_rate': float(para.adam_learning_rate),
+                'adam_beta': float(para.adam_beta),
+                'lrelu_alpha': float(para.lrelu_alpha),
+                'episodes': para.episodes
+            }
+
+        session = self.engine.session()
+
+        if job.results:
+            res = session.query(job_results).filter(job_results.id == job.results).scalar()
+            job.results = {
+                'id': res.id,
+                'discriminator_loss': float(res.discriminator_loss),
+                'generator_loss': float(res.generator_loss),
+                'discriminator_accuracy': float(res.discriminator_accuracy),
+                'generator_accuracy': float(res.generator_accuracy)
+            }
 
         return JobDTO(job.id,
                         job.label,
@@ -67,63 +104,10 @@ class JobRepo:
                         job.model_location,
                         job.record_location,
                         job.sound_type,
-                        {
-                            'batch_size': params.batch_size,
-                            'adam_learning_rate': params.adam_learning_rate,
-                            'adam_beta': params.adam_beta,
-                            'lrelu_alpha': params.lrelu_alpha,
-                            'episodes': params.episodes
-                        },
+                        job.parameters,
                         job.status,
                         job.results,
                         job.description)
-
-
-
-    def insertJob(self, modelInput):
-        '''
-        Create a new job in database
-        :param modelInput: JobInputModel, an input object for job.
-        :return: int, the id of the newly created job.
-        '''
-        session = self.engine.session()
-        param = gan_parameters(batch_size=modelInput.parameters.batch_size,
-                               adam_learning_rate=modelInput.parameters.adam_learning_rate,
-                               adam_beta=modelInput.parameters.adam_beta,
-                               lrelu_alpha=modelInput.parameters.lrelu_alpha,
-                               episodes=modelInput.parameters.episodes)
-
-        session.add(param)
-        session.commit()
-        param.id
-
-        now = datetime.now()
-
-        job = gan_job(label=modelInput.label, version=modelInput.version, date_time_start=now, sound_type=modelInput.sound_type, parameters=param.id)
-        session.add(job)
-        session.commit()
-
-        retJobDto = JobDTO(job.id,
-                           job.label,
-                           job.version,
-                           datetime.timestamp(now),
-                           job.date_time_stop,
-                           job.model_location,
-                           job.record_location,
-                           job.sound_type,
-                           {
-                               'id': param.id,
-                               'batch_size': param.batch_size,
-                               'adam_learning_rate': float(param.adam_learning_rate),
-                               'adam_beta': float(param.adam_beta),
-                               'lrelu_alpha': float(param.lrelu_alpha),
-                               'episodes': param.episodes
-                           },
-                           job.status,
-                           job.results,
-                           job.description)
-
-        return retJobDto
 
 
     def deleteJobById(self, id):
@@ -137,7 +121,6 @@ class JobRepo:
         session.delete(jobToDelete)
         session.commit()
 
-
     def putJob(self, inputModel):
         '''
         Update a job in database
@@ -149,9 +132,9 @@ class JobRepo:
 
         if inputModel.results:
             res = job_results(discriminator_loss=inputModel.results['discriminator_loss'],
-                                generator_loss=inputModel.results['generator_loss'],
-                                discriminator_accuracy=inputModel.results['discriminator_accuracy'],
-                                generator_accuracy=inputModel.results['generator_accuracy'])
+                              generator_loss=inputModel.results['generator_loss'],
+                              discriminator_accuracy=inputModel.results['discriminator_accuracy'],
+                              generator_accuracy=inputModel.results['generator_accuracy'])
 
             session.add(res)
             session.commit()
@@ -168,8 +151,8 @@ class JobRepo:
 
         job.label = inputModel.label
         job.version = inputModel.version
-        job.date_time_start = date_start
-        job.date_time_stop = date_stop
+        job.date_time_start = date_start  # inputModel.date_time_start
+        job.date_time_stop = date_stop  # inputModel.date_time_stop
         job.model_location = inputModel.model_location
         job.record_location = inputModel.record_location
         job.sound_type = inputModel.sound_type

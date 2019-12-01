@@ -74,6 +74,11 @@ List all buckets in project
 gsutil ls
 ```
 
+Download all from bucket
+```bash
+gsutil -m cp -R gs://<bucket_name> .
+```
+
 ### Compute Instances
 
 List all compute instances

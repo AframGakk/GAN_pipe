@@ -9,4 +9,10 @@ ENV PYTHONUNBUFFERED=1
 
 COPY . .
 
+ENV RUSER=guest
+ENV RPASS=guest
+ENV RHOST=localhost
+ENV RVHOST=/
+ENV TOKEN=34fwe43ff4ogfkm5!
+
 CMD [ "python", "./SchedulingController.py" ]

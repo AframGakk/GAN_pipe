@@ -2,6 +2,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from os import environ
 
+
+
 from Models.Entities.DataEntities import Base
 
 class SqlEngine:

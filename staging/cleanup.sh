@@ -11,3 +11,5 @@
 
 kubectl delete deployment ingestion-service
 kubectl delete deployment controller-service
+kubectl delete deployment training-scheduler
+kubectl delete deployment gan-service

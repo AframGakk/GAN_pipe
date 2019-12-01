@@ -33,6 +33,6 @@ class TestModelRepo(TestCase):
 
 
     def test_conbt(self):
-        self.service.convertRawToRecordData(1, 1)
+        self.service.convertRawToRecordData(3, 1)
 
 

@@ -73,7 +73,8 @@ class test_JobRepo(TestCase):
 
 
     def test_get_job_by_id(self):
-        job = self.repo.getJobById(41)
+        job = self.repo.getJobById(73)
+        print(job.__dict__())
 
     def test_put_job(self):
         jobDto.parameters = 36

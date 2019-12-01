@@ -2,21 +2,28 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: training-scheduler
+  name: gan-service
 # namespace: cepstralinstruments
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
-      app: training-scheduler
+      app: gan-service
   template:
     metadata:
       labels:
-        app: training-scheduler
+        app: gan-service
     spec:
+      volumes:
+        - name: google-cloud-key
+          secret:
+            secretName: controller-service-account
       containers:
-        - name: training-scheduler
-          image: gcr.io/samplergan/training-scheduler:latest
+        - name: gan-service
+          image: gcr.io/samplergan/gan-service:latest
+          volumeMounts:
+            - name: google-cloud-key
+              mountPath: /var/secrets/google
           env:
             - name: RHOST
               value: 'rabbit-mq-service'
@@ -26,8 +33,6 @@ spec:
               value: 'guest'
             - name: RVHOST
               value: '/'
-            - name: TOKEN
-              value: 'asghwegalkjerhghoaier0439845!'
             - name: PGHOST
               value: '34.89.28.185'
             - name: PGDATABASE
@@ -36,3 +41,5 @@ spec:
               value: 'villi'
             - name: PGPASSWORD
               value: 'aframgakk19'
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: /var/secrets/google/key.json

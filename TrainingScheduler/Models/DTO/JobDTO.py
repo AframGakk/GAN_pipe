@@ -1,11 +1,11 @@
 import json
-from datetime import datetime
 
 # TODO: Bæta gan_results inn í allt unitið
 
 class JobDTO:
 
-    def __init__(self, id, label, version, date_time_start, date_time_stop, model_location, record_location, sound_type, parameters, status, results, description):
+    def __init__(self, id, label, version, date_time_start, date_time_stop, model_location, record_location,
+                 sound_type, parameters, status, results, description):
         '''
         A data transfer object for the Job object (Training Job)
         :param id: int, The unique id.
@@ -42,16 +42,14 @@ class JobDTO:
         return hash(self.id)
 
     def __dict__(self):
-        #time_start = None
-        #time_stop = None
-        #if self.date_time_start:
-        #    time_start = datetime.timestamp(self.date_time_start)
-        #if self.date_time_stop:
-        #    time_stop = datetime.timestamp(self.date_time_stop)
+        if self.date_time_start:
+            self.date_time_start = self.date_time_start.strftime("%m/%d/%Y, %H:%M:%S")
+        if self.date_time_stop:
+            self.date_time_stop = self.date_time_stop.strftime("%m/%d/%Y, %H:%M:%S")
         return { 'id': self.id, 'label': self.label, 'version': self.version, 'date_time_start': self.date_time_start,
-                 'date_time_stop': self.date_time_stop, 'model_location': self.model_location,
-                 'record_location': self.record_location, 'sound_type': self.sound_type, 'parameters': self.parameters,
-                 'status': self.status, 'results': self.results, 'description': self.description}
+                 'date_time_stop': self.date_time_stop, 'model_location': self.model_location, 'record_location': self.record_location,
+                    'sound_type': self.sound_type, 'parameters': self.parameters,
+                 'status': self.status, 'results': self.results, 'description': self.description }
 
     def json(self):
         return json.dumps(self.__dict__())

@@ -6,9 +6,9 @@ import os
 from Repositories.JobRepo.JobRepo import JobRepo
 
 _jobRepo = JobRepo()
-TRAINER = os.environ['TRAINER']
-ZONE = os.environ['ZONE']
-PROJECT_ID = os.environ['PROJECT_ID']
+TRAINER = 'ml.trainer'#os.environ['TRAINER']
+ZONE = 'ZONE'#os.environ['ZONE']
+PROJECT_ID = 'PROJECT_ID'#os.environ['PROJECT_ID']
 
 class JobService:
     def __init__(self):
@@ -36,26 +36,27 @@ class JobService:
 
 
     def deployJob(self, jobDto):
-
-        jobDto.status = 1
-        self.updateJob(jobDto)
-
-        if self._learnerInstance_status() == 'TERMINATED':
-            self._turnOn_learner()
+        #if self._learnerInstance_status() == 'TERMINATED':
+        #    self._turnOn_learner()
 
         if self.active_jobs > 3:
+            jobDto.status = 4
             self.job_queue.append(jobDto)
+            self.updateJob(jobDto)
             return None
         else:
+            jobDto.status = 1
             #self.deployJob(jobDto)
-            self.job_pool.add(jobDto)
+            #self.job_pool.add(jobDto)
             self.active_jobs += 1
+            self.updateJob(jobDto)
             return jobDto
 
 
+
     def jobRetrieval(self, jobDto):
-        if jobDto in self.job_pool:
-            self.job_pool.remove(jobDto)
+        #if jobDto in self.job_pool:
+        #    self.job_pool.remove(jobDto)
         self.active_jobs -= 1
         jobDto.date_time_stop = datetime.timestamp(datetime.now())
         jobDto.status = 2
@@ -64,10 +65,10 @@ class JobService:
         if self.job_queue:
             self.deployJob(self.pop_queue())
             return jobDto
-        else:
-            if self.active_jobs <= 0:
-                self._turnOff_learner()
-            return None
+        #else:
+        #    if self.active_jobs <= 0:
+        #        self._turnOff_learner()
+        return None
 
 
     def updateJob(self, jobDto):

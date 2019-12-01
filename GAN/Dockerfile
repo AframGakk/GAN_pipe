@@ -1,11 +1,21 @@
-FROM python:3
+FROM datmo/tensorflow:cpu
 
 WORKDIR /usr/src/app
 
+#COPY ./Models ./Models
+#COPY ./Repositories ./Repositories
+#COPY ./Services ./Services
+#COPY ./tmp ./tmp
+#COPY ./Controller.py ./Controller.py
+#COPY ./requirements.txt ./requirements.txt
+RUN pip install virtualenv
+RUN virtualenv venv
 COPY requirements.txt ./
-RUN pip install --no-cache-dir -r requirements.txt
+RUN source venv/bin/activate
+RUN pip install -r requirements.txt
 
 ENV PYTHONUNBUFFERED=1
+
 ENV RHOST=localhost
 ENV RUSER=guest
 ENV RPASS=guest

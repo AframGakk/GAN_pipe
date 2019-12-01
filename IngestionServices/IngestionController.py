@@ -26,7 +26,7 @@ class IngestionController:
         self.ingestion_queue = 'gan.training.ingestion'
 
         # Keys
-        self.feature_key = 'gan.training.features'
+        self.feature_key = 'gan.training.controller.records'
 
 
         # Declare the queue, if it doesn't exist
@@ -48,9 +48,10 @@ class IngestionController:
             logger.error(__name__, 'Body is not json compatable in broker callback')
             return
 
-        ingestionService.convertRawToRecordData(body_obj['sound_type'], body_obj['version'])
+        record_loc = ingestionService.convertRawToRecordData(body_obj['id'], body_obj['version'])
+        body_obj['record_location'] = record_loc
 
-        self.channel.basic_publish(exchange='', routing_key=self.feature_key, body=body)
+        self.channel.basic_publish(exchange='', routing_key=self.feature_key, body=json.dumps(body_obj))
 
 if __name__ == '__main__':
     controller = IngestionController()
