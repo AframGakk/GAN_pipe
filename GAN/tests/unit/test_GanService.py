@@ -5,6 +5,7 @@ import soundfile as sf
 import tensorflow as tf
 
 from Services.GanService import GanService
+from Services.FeatureEngineering.FeatureEngineering import load_data
 
 os.chdir('../../')
 
@@ -35,7 +36,19 @@ class test_GanService(TestCase):
     def test_run_training(self):
         gan = GanService()
 
-        gan.train(epochs=10)
+        #gan.train(epochs=10)
+
+
+    def test_math(self):
+        size = 660
+        batch = 128
+
+        print(int(660/128))
+
+    def test_load_data(self):
+        res = load_data(1, 1)
+        tmp = len(res)
+        name = ''
 
 
 

@@ -8,15 +8,19 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: training-scheduler
+      run: training-scheduler
   template:
     metadata:
       labels:
-        app: training-scheduler
+        run: training-scheduler
     spec:
       containers:
         - name: training-scheduler
           image: gcr.io/samplergan/training-scheduler:latest
+          ports:
+            - name: main
+              protocol: TCP
+              containerPort: 5007
           env:
             - name: RHOST
               value: 'rabbit-mq-service'

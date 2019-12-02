@@ -29,7 +29,8 @@ class test_GeneratorModel(TestCase):
 
     def test_init_2(self):
 
-        g = GeneratorModel_v1()
+        g = GenModel()
+        print(g.model.summary)
         #self.assertTrue(self.generator)
 
     def test_images_should_be_16(self):

@@ -6,7 +6,7 @@ spec:
   rules:
   - http:
       paths:
-      - path: /admin/*
+      - path: /*
         backend:
-          serviceName: training-scheduler-service
+          serviceName: training-scheduler
           servicePort: 5007

@@ -1,17 +1,11 @@
-FROM datmo/tensorflow:cpu
+FROM tensorflow/tensorflow
 
 WORKDIR /usr/src/app
 
-#COPY ./Models ./Models
-#COPY ./Repositories ./Repositories
-#COPY ./Services ./Services
-#COPY ./tmp ./tmp
-#COPY ./Controller.py ./Controller.py
-#COPY ./requirements.txt ./requirements.txt
-RUN pip install virtualenv
-RUN virtualenv venv
+RUN apt-get update
+RUN apt-get install -y libsndfile1-dev
+
 COPY requirements.txt ./
-RUN source venv/bin/activate
 RUN pip install -r requirements.txt
 
 ENV PYTHONUNBUFFERED=1
@@ -27,6 +21,7 @@ ENV PGHOST=34.89.28.185
 ENV PGDATABASE=ml-pipe-database
 ENV PGUSER=villi
 ENV PGPASSWORD=aframgakk19
+ENV GOOGLE_APPLICATION_CREDENTIALS=./bucket.json
 
 COPY . .
 

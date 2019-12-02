@@ -86,7 +86,7 @@ def job_requests_item(id):
 
 @app.route('/', methods = ['GET'])
 def status():
-    return 'Running'
+    return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
 
 
 if __name__ == '__main__':

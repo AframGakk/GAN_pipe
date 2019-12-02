@@ -9,9 +9,7 @@ def hyperparameter_tuning():
         'batch_size': [ 32, 64, 128 ]
     }
 
-
     epochs = 1000
-
 
     for lr_item in hyperparams['adam_learning_rate']:
         for beta_item in hyperparams['adam_beta_1']:
@@ -40,7 +38,7 @@ def train():
     gan.train_old(epochs=epochs)
 
 
-train()
+hyperparameter_tuning()
 
 
 

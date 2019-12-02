@@ -250,6 +250,11 @@ class GeneratorModel:
         '''
         Last Step
         no strides
+        kernel:
+            20
+            25
+            50
+            100
         '''
 
         model = Sequential()
@@ -258,7 +263,7 @@ class GeneratorModel:
         model.add(LeakyReLU(alpha=alpha))
         model.add(Reshape((1000, 1)))
 
-        model.add(Conv1D(4, 20, padding='same'))
+        model.add(Conv1D(4, 25, padding='same'))
         model.add(BatchNormalization(momentum=0.9))
         model.add(LeakyReLU(alpha=alpha))
         model.add(Dropout(rate=0.1))
@@ -268,12 +273,12 @@ class GeneratorModel:
         model.add(LeakyReLU(alpha=alpha))
         model.add(Dropout(rate=0.1))
 
-        model.add(Conv1D(16, 50, padding='same'))
-        model.add(BatchNormalization(momentum=0.9))
-        model.add(LeakyReLU(alpha=alpha))
-        model.add(Dropout(rate=0.1))
+        #model.add(Conv1D(16, 25, padding='same'))
+        #model.add(BatchNormalization(momentum=0.9))
+        #model.add(LeakyReLU(alpha=alpha))
+        #model.add(Dropout(rate=0.1))
 
-        model.add(Conv1D(16, 100, padding='same'))
+        model.add(Conv1D(16, 25, padding='same'))
         model.add(Dropout(rate=0.3))
         model.add(Flatten())
 
