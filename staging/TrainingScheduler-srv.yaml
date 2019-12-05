@@ -2,12 +2,13 @@ kind: Service
 apiVersion: v1
 metadata:
   name: training-scheduler
-  labels:
-    run: training-scheduler
+  namespace: default
 spec:
-  type: NodePort
+  type: LoadBalancer
   selector:
     app: training-scheduler
   ports:
     - port: 5007
+      targetPort: 5007
       protocol: TCP
+

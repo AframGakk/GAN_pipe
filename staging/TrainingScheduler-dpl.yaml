@@ -8,11 +8,11 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      run: training-scheduler
+      app: training-scheduler
   template:
     metadata:
       labels:
-        run: training-scheduler
+        app: training-scheduler
     spec:
       containers:
         - name: training-scheduler

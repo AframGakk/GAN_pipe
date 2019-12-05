@@ -50,7 +50,7 @@ class GanService:
                 real_y = np.ones((halfBatch, 1))
 
                 # generate fake examples
-                noise = np.random.normal(0, 1, (halfBatch, 100))
+                noise = np.random.normal(-1, 1, (halfBatch, 100))
                 fake_inputs = self.generator.model.predict(noise)
 
                 x_combined_batch = np.concatenate((real_inputs, fake_inputs))
@@ -67,7 +67,7 @@ class GanService:
             d2_hist.append(d_acc1)
 
             # Train stacked generator
-            noise = np.random.normal(0, 1, (self.batch_size, 100))
+            noise = np.random.normal(-1, 1, (self.batch_size, 100))
             y_mislabled = np.ones((self.batch_size, 1))
             g_loss, g_acc = self.adverserialModel.model.train_on_batch(noise, y_mislabled)
 
@@ -78,7 +78,7 @@ class GanService:
             a1_hist.append(g_loss)
             a2_hist.append(g_acc)
 
-            if epoch % 2 == 0:
+            if epoch % 100 == 0:
                 #print("epoch: %d" % (epoch))
                 print("Discriminator_loss: %f, Generator_loss: %f" % (d_loss1, g_loss))
                 #self.plot_losses(epoch, bucket_save=True)
@@ -128,7 +128,7 @@ class GanService:
                 #self.adverserialModel.model.layers[1].set_weights(self.discriminator.model.get_weights())
 
                 # generate fake examples
-                noise = np.random.normal(0, 1, (halfBatch, 100))
+                noise = np.random.normal(-1, 1, (halfBatch, 100))
                 fake_inputs = self.generator.model.predict(noise)
 
                 # update discriminator weights
@@ -136,7 +136,7 @@ class GanService:
                 d_loss2, d_acc2 = self.discriminator.model.train_on_batch(fake_inputs, fake_y)
 
             # prepare gan values
-            noise = np.random.normal(0, 1, (halfBatch, 100))
+            noise = np.random.normal(-1, 1, (halfBatch, 100))
             y_gan = np.ones((halfBatch, 1))
 
             # train gan
@@ -181,7 +181,7 @@ class GanService:
 
     def generate_sound(self, num_to_generate):
         #seed = np.random.normal([num_to_generate, 100])
-        seed = np.random.normal(0, 1, (num_to_generate, 100))
+        seed = np.random.normal(-1, 1, (num_to_generate, 100))
         return self.generator.model.predict(seed)
 
 

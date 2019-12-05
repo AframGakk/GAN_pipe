@@ -15,13 +15,13 @@ def hyperparameter_tuning():
         for beta_item in hyperparams['adam_beta_1']:
             for alpha in hyperparams['lrelu_alpha']:
                 for batch_size in hyperparams['batch_size']:
-                    _service = GanService('tuning', 1, batch_size=batch_size, lrelu_alpha=alpha, adam_learning_rate=lr_item, adam_beta1=beta_item)
-                    _service.train_old(epochs=1000)
-                    _service.train(epochs=1000)
+                    _service = GanService('ronja_v2', 1, batch_size=batch_size, lrelu_alpha=alpha, adam_learning_rate=lr_item, adam_beta1=beta_item)
+                    _service.train_old(epochs=epochs)
+                    _service.train(epochs=epochs)
 
 def train():
-    epochs = 100000
-    version = 'tuning'
+    epochs = 1
+    version = 'ronja_v2'
     id = 1
     batch = 128
     alpha = 0.1
@@ -38,7 +38,7 @@ def train():
     gan.train_old(epochs=epochs)
 
 
-hyperparameter_tuning()
+train()
 
 
 
