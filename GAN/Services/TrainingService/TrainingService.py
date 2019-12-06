@@ -12,7 +12,7 @@ def train(jobDto):
                         adam_learning_rate=jobDto['parameters']['adam_learning_rate'],
                         adam_beta1=jobDto['parameters']['adam_beta'])
 
-        results, model_location = gan.train_old(epochs=jobDto['parameters']['episodes'])
+        results, model_location = gan.train_v1(epochs=jobDto['parameters']['episodes'])
         return results, model_location
     except Exception:
         traceback.print_exc()
