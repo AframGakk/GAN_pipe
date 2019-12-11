@@ -2,7 +2,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: controller-service
+  name: controller-service-v1
 # namespace: cepstralinstruments
 spec:
   replicas: 1

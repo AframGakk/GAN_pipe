@@ -91,6 +91,7 @@ class test_DiscriminatorModel(TestCase):
     def test_DiscriminatorModel(self):
 
         model = DiscriminatorModel()
+        model.model.summary()
 
         #noise = np.random.normal(0, 1, (32, 16000))
         #noise_2 = np.random.normal(0, 1, (32, 16000))

@@ -1,14 +1,18 @@
 from flask import Flask
 from flask import request, abort, json, jsonify, g
 from flask_expects_json import expects_json
+from flask_cors import CORS, cross_origin
 from Services.MQService.MQService import MQService
 from Services.AuthService.AuthService import AuthService
 from Services.JobService.JobService import getAllJobs, getJobById
+
 
 _mqService = MQService()
 _authService = AuthService()
 
 app = Flask(__name__)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 schema = {
     'type': 'object',
@@ -23,10 +27,11 @@ schema = {
 
 # POST new job
 @app.route('/admin/training/job', methods = ['POST'])
+@cross_origin()
 @expects_json(schema)
 def job_post_requests():
     # auth validation
-    if not request.headers['authorization']:
+    if 'Authorization' not in request.headers:
         abort(403, 'Header missing authenticaiton key')
 
     if not _authService.authenticate(request.headers['authorization']):
@@ -47,12 +52,13 @@ def job_post_requests():
 
 
 @app.route('/admin/training/job', methods = ['GET'])
+@cross_origin()
 def job_get_requests():
     # auth validation
-    if not request.headers['authorization']:
+    if 'Authorization' not in request.headers:
         abort(403, 'Header missing authenticaiton key')
 
-    if not _authService.authenticate(request.headers['authorization']):
+    if not _authService.authenticate(request.headers['Authorization']):
         abort(403, 'Authentication key is invalid')
 
     # GET all jobs
@@ -64,9 +70,10 @@ def job_get_requests():
 
 
 @app.route('/admin/training/job/<id>', methods = ['GET'])
+@cross_origin()
 def job_requests_item(id):
     # auth validation
-    if not request.headers['authorization']:
+    if 'Authorization' not in request.headers:
         abort(403, 'Header missing authenticaiton key')
 
     if not _authService.authenticate(request.headers['authorization']):
@@ -81,13 +88,11 @@ def job_requests_item(id):
 
 
 
-
-
-
-@app.route('/', methods = ['GET'])
+@app.route('/healthcheck', methods = ['GET'])
+@cross_origin()
 def status():
     return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
 
 
 if __name__ == '__main__':
-    app.run(debug=False, port=5007)
+    app.run(host='0.0.0.0', debug=False, port=5007)

@@ -18,8 +18,8 @@ kubectl scale deployment ingestion-service --replicas=1
 kubectl scale deployment controller-service --replicas=0
 kubectl scale deployment controller-service --replicas=1
 
-kubectl scale deployment training-scheduler --replicas=0
-kubectl scale deployment training-scheduler --replicas=1
+kubectl scale deployment training-scheduler-v1 --replicas=0
+kubectl scale deployment training-scheduler-v1 --replicas=1
 
 kubectl scale deployment gan-service --replicas=0
 kubectl scale deployment gan-service --replicas=1

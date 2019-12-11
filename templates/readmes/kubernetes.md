@@ -87,7 +87,7 @@ gcloud container clusters create encode-ai-staging \
 get the credentials so we can manage it locally through kubectl
 
 ```bash
-gcloud container clusters get-credentials wisebeat \
+gcloud container clusters get-credentials wisebeat-cluster-staging \
     --zone europe-west2-a 
 ```
 
