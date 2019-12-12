@@ -1,5 +1,5 @@
 import numpy as np
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 from keras.optimizers import Adam
 from keras.models import Sequential
 from Models.GeneratorModel import GeneratorModel
@@ -89,7 +89,7 @@ class GanService:
                 #first_sound = self.generate_sound(1)[0]
                 #sf.write('./tmp/sample.wav', first_sound, 16000, subtype='PCM_16')
                 #_modelRepo.saveSoundToBucket('./tmp/sample.wav', epoch)
-                self.plot_history_old(self.title, d1_hist, a1_hist, d2_hist, a2_hist, bucket_save=True)
+                #self.plot_history_old(self.title, d1_hist, a1_hist, d2_hist, a2_hist, bucket_save=True)
 
             epoch += 1
 
@@ -103,7 +103,6 @@ class GanService:
         return results, self.model_loc
 
 
-
     def train_v2(self, epochs=1000000):
         epoch = 0
 
@@ -159,68 +158,7 @@ class GanService:
                 #first_sound = self.generate_sound(1)[0]
                 #sf.write('./tmp/sample.wav', first_sound, 16000, subtype='PCM_16')
                 #_modelRepo.saveSoundToBucket('./tmp/sample.wav', epoch)
-                self.plot_history(self.title, d1_hist, d2_hist, g_hist, a1_hist, a2_hist, bucket_save=True)
-
-
-            epoch +=  1
-
-
-    def train_v2(self, epochs=1000000):
-        epoch = 0
-
-        d1_hist, d2_hist, a1_hist, a2_hist, g_hist = list(), list(), list(), list(), list()
-
-        for epoch in range(epochs):
-
-            halfBatch = int(self.batch_size/2)
-            steps = int(len(self.training_data)/halfBatch)
-
-            for step in range(steps):
-                # generate random real samples
-                random_index = np.random.randint(0, self.training_data.shape[0] - halfBatch)
-                real_inputs = self.training_data[random_index: int(random_index + halfBatch)]
-                real_y = np.ones((halfBatch, 1))
-
-                # update discriminator weights
-                d_loss1, d_acc1 = self.discriminator.model.train_on_batch(real_inputs, real_y)
-
-                # TODO: CHANGE
-                # update stacked discriminator weights
-                #self.adverserialModel.model.layers[1].set_weights(self.discriminator.model.get_weights())
-
-                # generate fake examples
-                noise = np.random.normal(-1, 1, (halfBatch, 100))
-                fake_inputs = self.generator.model.predict(noise)
-
-                # update discriminator weights
-                fake_y = np.zeros((halfBatch, 1))
-                d_loss2, d_acc2 = self.discriminator.model.train_on_batch(fake_inputs, fake_y)
-
-            # prepare gan values
-            noise = np.random.normal(-1, 1, (halfBatch, 100))
-            y_gan = np.ones((halfBatch, 1))
-
-            # train gan
-            g_loss, g_acc = self.adverserialModel.model.train_on_batch(noise, y_gan)
-
-            # append loss and accuracies
-            d1_hist.append(d_loss1)
-            d2_hist.append(d_loss2)
-            g_hist.append(g_loss)
-            a1_hist.append(d_acc1)
-            a2_hist.append(d_acc2)
-
-            if epoch % 2 == 0:
-                #print("epoch: %d" % (epoch))
-                print("Discriminator_loss: %f, Generator_loss: %f" % (d_loss1, d_loss2))
-                #self.plot_losses(epoch, bucket_save=True)
-                _modelRepo.saveDataToBucket('generator_{}_old'.format(self.title), self.generator.model, self.version, self.job_id)
-                _modelRepo.saveDataToBucket('discriminator_{}_old'.format(self.title), self.generator.model, self.version, self.job_id)
-                _modelRepo.saveDataToBucket('adverserial_{}_old'.format(self.title), self.generator.model, self.version, self.job_id)
-                #first_sound = self.generate_sound(1)[0]
-                #sf.write('./tmp/sample.wav', first_sound, 16000, subtype='PCM_16')
-                #_modelRepo.saveSoundToBucket('./tmp/sample.wav', epoch)
-                self.plot_history(self.title, d1_hist, d2_hist, g_hist, a1_hist, a2_hist, bucket_save=True)
+                #self.plot_history(self.title, d1_hist, d2_hist, g_hist, a1_hist, a2_hist, bucket_save=True)
 
 
             epoch +=  1
@@ -281,7 +219,7 @@ class GanService:
                 #first_sound = self.generate_sound(1)[0]
                 #sf.write('./tmp/sample.wav', first_sound, 16000, subtype='PCM_16')
                 #_modelRepo.saveSoundToBucket('./tmp/sample.wav', epoch)
-                self.plot_history(self.title, d1_hist, d2_hist, g_hist, a1_hist, a2_hist, bucket_save=True)
+                #self.plot_history(self.title, d1_hist, d2_hist, g_hist, a1_hist, a2_hist, bucket_save=True)
 
             epoch += 1
 
@@ -314,7 +252,7 @@ class GanService:
         seed = np.random.normal(-1, 1, (num_to_generate, 100))
         return self.generator.model.predict(seed)
 
-
+'''
 
     def plot_history_old(self, title, d1_hist, g_hist, a1_hist, a2_hist, bucket_save=False):
         # plot loss
@@ -373,3 +311,5 @@ class GanService:
             return
 
         plt.show()
+
+'''
