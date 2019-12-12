@@ -11,7 +11,7 @@ import soundfile as sf
 
 #from utils import audio_tools as audio
 
-from Models.GeneratorModel import GeneratorModel
+from Models.GeneratorModel import GeneratorModel, Generator_new
 from Models.GeneratorModel import GenModel
 
 os.chdir('../../')
@@ -57,19 +57,33 @@ class test_GeneratorModel(TestCase):
 
     def test_load_model(self):
 
-        g_location = './tmp/model.h5'
+        g_location = './tmp/generator.h5'
         wav_location = './tmp/sample.wav'
         noise = np.random.normal(0, 1, (1, 100))
 
         generator = load_model(g_location)
 
+        flat_sound = generator.predict(noise).flatten()
         sound = generator.predict(noise)
 
         print(generator.summary())
 
-        sf.write(wav_location, sound[0], 16000, subtype='PCM_16')
+        sf.write(wav_location, sound, 16000, subtype='PCM_16')
 
         name = ''
+
+
+    def test_generator_v3(self):
+
+        model = ""
+
+
+    def test_generator_4(self):
+        model = Generator_new()
+
+
+
+
 
 
 

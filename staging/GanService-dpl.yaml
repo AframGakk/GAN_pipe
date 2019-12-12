@@ -34,7 +34,7 @@ spec:
             - name: RVHOST
               value: '/'
             - name: PGHOST
-              value: '34.89.28.185'
+              value: 'sqlproxy-service-database1'
             - name: PGDATABASE
               value: 'ml-pipe-database'
             - name: PGUSER

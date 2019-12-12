@@ -151,56 +151,69 @@ class kerasDiscriminator_OLD():
         self.output = output
 
 
-class kerasDiscriminator():
-    def __init__(self, input):
-        output = K.constant(input, 1)
+class Discriminator_new():
+    def __init__(self):
+        #output = K.constant(input, 1)
         dim = 64
         kernel_len = 25
         phaseshuffle_rad = 2
 
+        inputshape = 16384
+
         model = Sequential()
 
+        model.add(Reshape((InputShape, 1), input_shape=(InputShape,)))
         # Layer 0
         # [16384, 1] -> [4096, 64]
         model.add(Conv1D(dim, kernel_size=kernel_len, strides=4, padding='SAME', input_shape=(16384, 1)))
         model.add(LeakyReLU(alpha=0.2)) # TODO: is alpha important
-        model.add(BatchNormalization(0.9))
-        output = apply_phaseshuffle(output, phaseshuffle_rad)
+        #model.add(BatchNormalization(0.9))
+        #output = apply_phaseshuffle(output, phaseshuffle_rad)
 
         # Layer 1
         # [4096, 64] -> [1024, 128]
-        output = Conv1D(dim * 2, kernel_size=kernel_len, strides=4, padding='SAME')(output)
-        model.add(BatchNormalization(0.9))
-        output = LeakyReLU()(output)
-        output = apply_phaseshuffle(output, phaseshuffle_rad)
+        model.add(Conv1D(dim * 2, kernel_size=kernel_len, strides=4, padding='SAME'))
+        model.add(BatchNormalization())
+        model.add(LeakyReLU())
+        #output = apply_phaseshuffle(output, phaseshuffle_rad)
 
         # Layer 2
         # [1024, 128] -> [256, 256]
-        output = Conv1D(dim * 4, kernel_size=kernel_len, strides=4, padding='SAME')(output)
-        model.add(BatchNormalization(0.9))
-        output = LeakyReLU()(output)
-        output = apply_phaseshuffle(output, phaseshuffle_rad)
+        model.add(Conv1D(dim * 4, kernel_size=kernel_len, strides=4, padding='SAME'))
+        model.add(BatchNormalization())
+        model.add(LeakyReLU())
+        #output = apply_phaseshuffle(output, phaseshuffle_rad)
 
         # Layer 3
         # [256, 256] -> [64, 512]
-        output = Conv1D(dim * 8, kernel_size=kernel_len, strides=4, padding='SAME')(output)
-        model.add(BatchNormalization(0.9))
-        output = LeakyReLU()(output)
-        output = apply_phaseshuffle(output, phaseshuffle_rad)
+        model.add(Conv1D(dim * 8, kernel_size=kernel_len, strides=4, padding='SAME'))
+        model.add(BatchNormalization())
+        model.add(LeakyReLU())
+        #output = apply_phaseshuffle(output, phaseshuffle_rad)
 
         # Layer 4
         # [64, 512] -> [16, 1024]
-        output = Conv1D(dim * 16, kernel_size=kernel_len, strides=4, padding='SAME')(output)
-        model.add(BatchNormalization(0.9))
-        output = LeakyReLU()(output)
+        model.add(Conv1D(dim * 16, kernel_size=kernel_len, strides=4, padding='SAME'))
+        model.add(BatchNormalization())
+        model.add(LeakyReLU())
+
+        model.add(Flatten())
+        model.add(Dense(1))
 
         # Flatten
-        output = Flatten()(output)
+        #output = Flatten()(output)
         #output = Reshape()
+        #output = Dense(1)(output)  #[:, 0]
 
-        output = Dense(1)(output)  #[:, 0]
+        #model.add(Flatten())
+        #model.add(Dense(1024))
+        #model.add(LeakyReLU(alpha=0.01))
+        #model.add(BatchNormalization(momentum=0.9))
+        #model.add(Dense(1, activation='sigmoid'))
 
-        self.output = output
+        print(model.summary())
+
+        self.model = model
 
 
 

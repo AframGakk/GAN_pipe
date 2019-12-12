@@ -23,7 +23,6 @@ def load_data(label, version):
     # normalize
     return normalization(features)
 
-
 def prepare_audiofeatures(df):
     sampling_rate = 16000
 

@@ -20,7 +20,7 @@ class MQService:
         self.training_key = 'gan.training.schedule'
 
         # Declare the queue, if it doesn't exist
-        self.channel.queue_declare(queue=self.training_key, durable=True)
+        self.channel.queue_declare(queue=self.training_key)
 
 
     def sendTrainingMessage(self, jobDto):

@@ -4,7 +4,7 @@ import os
 import librosa
 import matplotlib.pyplot as plt
 
-from Models.DiscriminatorModel import DiscriminatorModel, kerasDiscriminator, DiscrimModel
+from Models.DiscriminatorModel import DiscriminatorModel, DiscrimModel, Discriminator_new
 
 os.chdir('../../')
 
@@ -98,6 +98,10 @@ class test_DiscriminatorModel(TestCase):
 
         #model.train_batch(noise, noise_2)
 
+
+    def test_keras_discriminator(self):
+
+        model = Discriminator_new()
 
 
 

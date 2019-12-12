@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: rabbit-mq-service
 spec:
-  type: NodePort
+  type: ClusterIP
   ports:
     - port: 5672
       name: rabbit-tcp
