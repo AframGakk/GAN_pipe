@@ -5,17 +5,17 @@ class RecordRepo:
     def __init__(self):
         self.BUCKET = storage.Client().bucket('wisebeat-raw-data-storage')
 
-    def getRecords(self, label, version):
+    def getRecords(self, location):
 
-        self._getRecordsFromBucket(label, version)
+        self._getRecordsFromBucket(location)
         location = './tmp/sample_records.pkl'
         with open(location, 'rb') as file:
             data = pickle.load(file)
 
         return data
 
-    def _getRecordsFromBucket(self, label, version):
-        blob = self.BUCKET.blob('{}/{}/sample_records.pkl'.format(label, version))
+    def _getRecordsFromBucket(self, location):
+        blob = self.BUCKET.blob(location)
         blob.download_to_filename('./tmp/sample_records.pkl')
 
     def _getRecordsLocal(self):

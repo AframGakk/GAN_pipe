@@ -11,3 +11,4 @@ export PGHOST=34.89.28.185
 export PGDATABASE=ml-pipe-database
 export PGUSER=villi
 export PGPASSWORD=aframgakk19
+export TOKEN=asghwegalkjerhghoaier0439845!

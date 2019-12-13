@@ -3,7 +3,6 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: ingestion-service-v1
-# namespace: cepstralinstruments
 spec:
   replicas: 1
   selector:

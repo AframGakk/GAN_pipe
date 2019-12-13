@@ -9,13 +9,9 @@ from Repositories.SampleRepo.SampleRepo import SampleRepo
 _recordRepo = RecordRepo()
 _sampleRepo = SampleRepo()
 
-def getRecordDataframe(label, version):
-    return pandas.DataFrame(_recordRepo.getRecords(label, version))
+def load_data(record_location):
 
-
-def load_data(label, version):
-
-    dataframe = getRecordDataframe(label, version)
+    dataframe = pandas.DataFrame(_recordRepo.getRecords(record_location))
 
     # Get all features
     features = prepare_audiofeatures(dataframe)
@@ -25,9 +21,9 @@ def load_data(label, version):
 
 def prepare_audiofeatures(df):
     sampling_rate = 16000
+    input_length = 64000
 
-    features = np.empty(shape=(df.shape[0], sampling_rate))
-    input_length = sampling_rate
+    features = np.empty(shape=(df.shape[0], input_length))
 
     placer = 0
     for i in df.index:
@@ -47,15 +43,13 @@ def prepare_audiofeatures(df):
             features[placer,] = data
             placer = placer + 1
 
-        return features
+    return features
 
 
-# Stardize Data
 def normalization(X):
     mean = X.mean(keepdims=True)
     std = X.std(keepdims=True)
     X = (X - mean) / std
-
     return X
 
 
@@ -64,5 +58,7 @@ def normalize_features(features):
     mean = np.mean(features, axis=0)
     std = np.std(features, axis=0)
     feature_norm = (features - mean)/std
-
     return feature_norm
+
+
+

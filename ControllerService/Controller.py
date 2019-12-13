@@ -38,14 +38,14 @@ class Controller:
         self.deployment_key = 'gan.training.deploy'  # The deployment queue
 
         # Declare the queue, if it doesn't exist
-        self.channel.queue_declare(queue=self.scheduling_queue, durable=True)
-        self.channel.queue_declare(queue=self.retrieve_queue, durable=True)
-        self.channel.queue_declare(queue=self.feature_queue, durable=True)
+        self.channel.queue_declare(queue=self.scheduling_queue)
+        self.channel.queue_declare(queue=self.retrieve_queue)
+        self.channel.queue_declare(queue=self.feature_queue)
 
         # consume all queues needed
         self.channel.basic_consume(
             queue=self.scheduling_queue, on_message_callback=self.trainingScheduleCallback, auto_ack=True)
-        self.channel.basic_consume(
+        self.channel.basic_consume (
             queue=self.retrieve_queue, on_message_callback=self.trainingRetrievalCallback, auto_ack=True)
         self.channel.basic_consume(
             queue=self.feature_queue, on_message_callback=self.ingestionCallback, auto_ack=True)
@@ -63,7 +63,6 @@ class Controller:
         try:
             info_obj = json.loads(body)
         except JSONDecodeError:
-            #logger.error(__name__, 'body object is non json seriable: {}'.format(body))
             print('The body object could not be serialized: {}'.format(body))
             return
 
@@ -86,9 +85,7 @@ class Controller:
         jobDto = _jobService.createJob(jobInput)
 
         if jobDto:
-            #self.channel.basic_publish(exchange='', routing_key=self.training_key, body=jobDto.json())
             self.channel.basic_publish(exchange='', routing_key=self.ingestion_key, body=jobDto.json())
-
 
     def ingestionCallback(self, ch, method, props, body):
         print('Callback from feature engineering')
@@ -117,10 +114,9 @@ class Controller:
                         info_obj['description'])
 
         jobDto = _jobService.deployJob(jobDto)
-        print(jobDto)
 
         if jobDto:
-            self.channel.basic_publish(exchange='', routing_key=self.training_key, body=jobDto.json())
+            self.channel.basic_publish(exchange='', routing_key=self.training_key, body=jobDto.json(), properties=pika.BasicProperties(delivery_mode=2))
 
 
     def trainingRetrievalCallback(self, ch, method, props, body):
@@ -160,9 +156,6 @@ class Controller:
                         info_obj['description'])
 
         jobDto = _jobService.jobRetrieval(jobDto)
-
-        #if jobDto:
-        #    self.channel.basic_publish(exchange='', routing_key=self.deployment_key, body=jobDto.json())
 
 
     def _validate_jobDto(self, jobDto):

@@ -94,5 +94,10 @@ def status():
     return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
 
 
+@app.errorhandler(500)
+@cross_origin()
+def internal_error(error):
+    return "WOOOHOOOOO! Houston we have an error, just try again please :)"
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=False, port=5007)

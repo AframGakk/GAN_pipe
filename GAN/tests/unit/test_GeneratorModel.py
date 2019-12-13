@@ -7,12 +7,13 @@ from scipy.io import wavfile
 import tensorflow as tf
 from keras.models import load_model
 import soundfile as sf
+import librosa
+import noisereduce as nr
 
 
 #from utils import audio_tools as audio
 
-from Models.GeneratorModel import GeneratorModel, Generator_new
-from Models.GeneratorModel import GenModel
+from Models.GeneratorModel import GeneratorModel
 
 os.chdir('../../')
 
@@ -21,25 +22,15 @@ class test_GeneratorModel(TestCase):
 
 
     def test_init(self):
+        '''
+        Should have output shape of 64000 equals to 4 seconds of 16 kHz file.
+        :return:
+        '''
 
         g = GeneratorModel()
-        #self.assertTrue(self.generator)
-        print(g.model.summary())
-        name = ''
+        self.assertEqual(g.model.output_shape[1], 64000)
 
-    def test_init_2(self):
 
-        g = GenModel()
-        print(g.model.summary)
-        #self.assertTrue(self.generator)
-
-    def test_images_should_be_16(self):
-        # 16 is the half of batch size 32
-        generator = GenModel()
-        noise = np.random.normal(0, 100, (16, 100))
-        #images = generator.generate_sound(noise, training=False)
-
-        #self.assertEqual(images.shape[0], 16)
 
     def test_generate_sound_be_16000hz(self):
         # 16 is the half of batch size 32
@@ -57,9 +48,9 @@ class test_GeneratorModel(TestCase):
 
     def test_load_model(self):
 
-        g_location = './tmp/generator.h5'
+        g_location = './tmp/generator_1.h5'
         wav_location = './tmp/sample.wav'
-        noise = np.random.normal(0, 1, (1, 100))
+        noise = np.random.normal(0, 1, (1, 500))
 
         generator = load_model(g_location)
 
@@ -68,7 +59,7 @@ class test_GeneratorModel(TestCase):
 
         print(generator.summary())
 
-        sf.write(wav_location, sound, 16000, subtype='PCM_16')
+        sf.write(wav_location, flat_sound, 16000, subtype='PCM_16')
 
         name = ''
 
@@ -78,8 +69,18 @@ class test_GeneratorModel(TestCase):
         model = ""
 
 
-    def test_generator_4(self):
-        model = Generator_new()
+    def test_noise_reducer(self):
+
+        data, r = librosa.load('./tmp/sample.wav', 16000)
+
+        # perform noise reduction
+        reduced_noise = nr.reduce_noise(audio_clip=data, verbose=False, noise_clip=data[:])
+
+        sf.write('./tmp/reduced_noise.wav', reduced_noise, 16000, subtype='PCM_16')
+
+        name = ''
+
+
 
 
 

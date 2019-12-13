@@ -14,9 +14,9 @@ ingestionService = DataIngestionService()
 class IngestionController:
 
     def __init__(self):
-        RABBIT = os.environ['RABBIT']
-        RABBIT_USER = os.environ['RABBIT_USER']
-        RABBIT_PASS = os.environ['RABBIT_PASS']
+        RABBIT = os.environ['RHOST']
+        RABBIT_USER = os.environ['RUSER']
+        RABBIT_PASS = os.environ['RPASS']
 
         credentials = pika.PlainCredentials(RABBIT_USER, RABBIT_PASS)
         self.connection = pika.BlockingConnection(pika.ConnectionParameters(RABBIT, 5672, '/', credentials))
@@ -30,8 +30,8 @@ class IngestionController:
 
 
         # Declare the queue, if it doesn't exist
-        self.channel.queue_declare(queue=self.ingestion_queue, durable=True)
-        self.channel.queue_declare(queue=self.feature_key, durable=True)
+        self.channel.queue_declare(queue=self.ingestion_queue)
+        self.channel.queue_declare(queue=self.feature_key)
 
         self.channel.basic_consume(queue=self.ingestion_queue, on_message_callback=self.RawIngestionCallback, auto_ack=True)
 

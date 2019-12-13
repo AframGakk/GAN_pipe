@@ -22,7 +22,8 @@ retrieval_key = 'gan.training.retrieval'
 
 
 # Declare the queue, if it doesn't exist
-channel.queue_declare(queue=training_queue, durable=True)
+channel.queue_declare(queue=training_queue)
+channel.queue_declare(queue=retrieval_key)
 
 
 def trainingCallback(ch, method, props, body):
@@ -47,9 +48,7 @@ def trainingCallback(ch, method, props, body):
 
     info_obj['results'] = results
     info_obj['model_location'] = model_location
-
     channel.basic_publish(exchange='', routing_key=retrieval_key, body=json.dumps(info_obj))
-
 
 
 # consume all queues needed

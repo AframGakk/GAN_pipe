@@ -4,7 +4,7 @@ import numpy as np
 import soundfile as sf
 import tensorflow as tf
 
-from Services.GanService import GanService
+from Services.GanService.GanService import GanService
 from Services.FeatureEngineering.FeatureEngineering import load_data
 
 os.chdir('../../')
@@ -19,9 +19,6 @@ class test_GanService(TestCase):
 
     def test_real_audio_batch_size(self):
         self.service.train()
-
-
-
         name = ''
 
     def save_wav(self, wav, path):
@@ -29,9 +26,11 @@ class test_GanService(TestCase):
 
 
     def test_test(self):
-        z = tf.random.uniform([64, 100], -1., 1., dtype=tf.float32)
+        #(self, version, job_id, batch_size = 64, lrelu_alpha=0.2, adam_learning_rate=0.0002, adam_beta1=0.5)
+        serv = GanService('1/98/sample_records.pkl', 64, 0.2, 0.002, 0.5)
+        serv.train_v1(1)
 
-        name = ''
+
 
     def test_run_training(self):
         gan = GanService()

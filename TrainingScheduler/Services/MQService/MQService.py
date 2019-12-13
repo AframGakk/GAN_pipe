@@ -24,7 +24,13 @@ class MQService:
 
 
     def sendTrainingMessage(self, jobDto):
-        self.channel.basic_publish(exchange='', routing_key=self.training_key, body=json.dumps(jobDto))
+        try:
+            self.channel.basic_publish(exchange='', routing_key=self.training_key, body=json.dumps(jobDto))
+        except Exception:
+            print('Exception after broker lost connection')
+            exit(1)
+
+
 
 
 

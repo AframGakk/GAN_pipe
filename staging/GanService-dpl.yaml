@@ -3,7 +3,6 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: gan-service-v1
-# namespace: cepstralinstruments
 spec:
   replicas: 3
   selector:

@@ -12,26 +12,23 @@ from Services.FeatureEngineering.FeatureEngineering import load_data
 _modelRepo = ModelRepo()
 
 class GanService:
-    def __init__(self, version, job_id, batch_size = 64, lrelu_alpha=0.2, adam_learning_rate=0.0002, adam_beta1=0.5):
+    def __init__(self, record_location, version, job_id, batch_size = 64, lrelu_alpha=0.2, adam_learning_rate=0.0002, adam_beta1=0.5):
         self.batch_size = batch_size
         self.version = version
         self.job_id = job_id
-        self.modelConfig = ModelConfig()
         self.generator = GeneratorModel(alpha=lrelu_alpha)
         self.discriminator = DiscriminatorModel(alpha=lrelu_alpha)
 
         self.title='bs:{}-alpha:{}-lr:{}-beta:{}'.format(batch_size, lrelu_alpha, adam_learning_rate, adam_beta1)
 
         self.adverserialModel = AdverserialModel(self.discriminator.model, self.generator.model)
-        #self.stackedModel = self.stacked_model(self.generator.model, self.discriminator.model)
-
         self.optimizer = Adam(lr = adam_learning_rate, beta_1 = adam_beta1)
 
         #self.generator.model.compile(loss = 'binary_crossentropy', optimizer = self.optimizer,  metrics = ['accuracy'])
         self.discriminator.model.compile(loss = 'binary_crossentropy', optimizer = self.optimizer,  metrics = ['accuracy'])
         self.adverserialModel.model.compile(loss = 'binary_crossentropy', optimizer = self.optimizer,  metrics = ['accuracy'])
 
-        self.training_data = load_data(1, 1)
+        self.training_data = load_data(record_location)
 
         self.generatorLossHistory = []
         self.discriminatorLossHistory = []
@@ -40,8 +37,15 @@ class GanService:
         d1_hist, d2_hist, a1_hist, a2_hist, g_hist = list(), list(), list(), list(), list()
         epoch = 0
         for epoch in range(epochs):
-            halfBatch = int(self.batch_size / 2)
-            steps = int(len(self.training_data) / halfBatch)
+
+            if len(self.training_data) < self.batch_size:
+                self.batch_size = len(self.training_data)
+                steps = 1
+                halfBatch = self.batch_size
+            else:
+                halfBatch = int(self.batch_size / 2)
+                steps = int(len(self.training_data) / halfBatch)
+
 
             for step in range(steps):
                 # generate random real samples
@@ -50,7 +54,7 @@ class GanService:
                 real_y = np.ones((halfBatch, 1))
 
                 # generate fake examples
-                noise = np.random.normal(-1, 1, (halfBatch, 100))
+                noise = np.random.normal(-1, 1, (halfBatch, 500))
                 fake_inputs = self.generator.model.predict(noise)
 
                 x_combined_batch = np.concatenate((real_inputs, fake_inputs))
@@ -67,7 +71,7 @@ class GanService:
             d2_hist.append(d_acc1)
 
             # Train stacked generator
-            noise = np.random.normal(-1, 1, (self.batch_size, 100))
+            noise = np.random.normal(-1, 1, (self.batch_size, 500))
             y_mislabled = np.ones((self.batch_size, 1))
             g_loss, g_acc = self.adverserialModel.model.train_on_batch(noise, y_mislabled)
 
@@ -127,7 +131,7 @@ class GanService:
                 #self.adverserialModel.model.layers[1].set_weights(self.discriminator.model.get_weights())
 
                 # generate fake examples
-                noise = np.random.normal(-1, 1, (halfBatch, 100))
+                noise = np.random.normal(-1, 1, (halfBatch, 500))
                 fake_inputs = self.generator.model.predict(noise)
 
                 # update discriminator weights
@@ -135,7 +139,7 @@ class GanService:
                 d_loss2, d_acc2 = self.discriminator.model.train_on_batch(fake_inputs, fake_y)
 
             # prepare gan values
-            noise = np.random.normal(-1, 1, (halfBatch, 100))
+            noise = np.random.normal(-1, 1, (halfBatch, 500))
             y_gan = np.ones((halfBatch, 1))
 
             # train gan
@@ -179,7 +183,7 @@ class GanService:
                 real_y = np.ones((halfBatch, 1))
 
                 # generate fake examples
-                noise = np.random.normal(-1, 1, (halfBatch, 100))
+                noise = np.random.normal(-1, 1, (halfBatch, 500))
                 fake_inputs = self.generator.model.predict(noise)
 
                 # train discriminator real input
@@ -194,7 +198,7 @@ class GanService:
 
 
             # Train stacked generator
-            noise = np.random.normal(-1, 1, (self.batch_size, 100))
+            noise = np.random.normal(-1, 1, (self.batch_size, 500))
             y_mislabled = np.ones((self.batch_size, 1))
             g_loss, g_acc = self.adverserialModel.model.train_on_batch(noise, y_mislabled)
 
@@ -231,26 +235,6 @@ class GanService:
         }
 
         return results, self.model_loc
-
-
-    def _getFeaturesLocal(self, location):
-        with open(location, 'rb') as file:
-            data = np.load(file)
-
-        return data
-
-    # Stacked Generator and Discriminator
-    def stacked_model(self, Generator, Discriminator):
-        model = Sequential()
-        model.add(Generator.model)
-        model.add(Discriminator.model)
-        return model
-
-
-    def generate_sound(self, num_to_generate):
-        #seed = np.random.normal([num_to_generate, 100])
-        seed = np.random.normal(-1, 1, (num_to_generate, 100))
-        return self.generator.model.predict(seed)
 
 '''
 
