@@ -14,9 +14,9 @@ ingestionService = DataIngestionService()
 class IngestionController:
 
     def __init__(self):
-        RABBIT = os.environ['RABBIT']
-        RABBIT_USER = os.environ['RABBIT_USER']
-        RABBIT_PASS = os.environ['RABBIT_PASS']
+        RABBIT = os.environ['RHOST']
+        RABBIT_USER = os.environ['RUSER']
+        RABBIT_PASS = os.environ['RPASS']
 
         credentials = pika.PlainCredentials(RABBIT_USER, RABBIT_PASS)
         self.connection = pika.BlockingConnection(pika.ConnectionParameters(RABBIT, 5672, '/', credentials))
@@ -26,12 +26,12 @@ class IngestionController:
         self.ingestion_queue = 'gan.training.ingestion'
 
         # Keys
-        self.feature_key = 'ml.feature_service'
+        self.feature_key = 'gan.training.controller.records'
 
 
         # Declare the queue, if it doesn't exist
-        self.channel.queue_declare(queue=self.ingestion_queue, durable=True)
-        self.channel.queue_declare(queue=self.feature_key, durable=True)
+        self.channel.queue_declare(queue=self.ingestion_queue)
+        self.channel.queue_declare(queue=self.feature_key)
 
         self.channel.basic_consume(queue=self.ingestion_queue, on_message_callback=self.RawIngestionCallback, auto_ack=True)
 
@@ -41,15 +41,17 @@ class IngestionController:
         self.channel.start_consuming()
 
     def RawIngestionCallback(self, ch, method, properties, body):
+        print('Ingestion called')
         try:
             body_obj = json.loads(body)
         except Exception as ex:
             logger.error(__name__, 'Body is not json compatable in broker callback')
             return
 
-        ingestionService.convertRawToRecordData(body_obj['sound_type'], body_obj['version'])
+        record_loc = ingestionService.convertRawToRecordData(body_obj['id'], body_obj['version'])
+        body_obj['record_location'] = record_loc
 
-        self.channel.basic_publish(exchange='', routing_key=self.feature_key, body=body)
+        self.channel.basic_publish(exchange='', routing_key=self.feature_key, body=json.dumps(body_obj))
 
 if __name__ == '__main__':
     controller = IngestionController()

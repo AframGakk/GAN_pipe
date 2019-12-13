@@ -25,18 +25,20 @@ class RecordRepository:
         return fileloc
 
 
-    def saveRecordData(self, record_data, sound_type, version):
+    def saveRecordData(self, record_data, id, version):
         local_file = './tmp/record_data.pkl'
 
         with open(local_file, 'wb') as lFile:
             pickle.dump(record_data, lFile)
 
         try:
-            blob = self.BUCKET.blob('{}/{}/sample_records.pkl'.format(sound_type, version))
+            blob_location = '{}/{}/sample_records.pkl'.format(version, id)
+            blob = self.BUCKET.blob(blob_location)
             blob.upload_from_filename('./tmp/record_data.pkl')
         except Exception:
             logger.error(__name__, 'Could not save record data into GCP bucket', exception=traceback.print_exc())
 
         os.remove('./tmp/record_data.pkl')
+        return blob_location
 
 

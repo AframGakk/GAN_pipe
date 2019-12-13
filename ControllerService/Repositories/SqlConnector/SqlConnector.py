@@ -2,6 +2,7 @@ import psycopg2
 import pandas as pd
 import configparser
 import traceback
+from os import environ
 
 config = configparser.ConfigParser()
 

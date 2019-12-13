@@ -32,10 +32,10 @@ class DataIngestionService:
         recordRepo.saveRecordDataLocal(bucket_obj)
 
 
-    def convertRawToRecordData(self, sound_type, version):
+    def convertRawToRecordData(self, id, version):
 
-        bucket_obj = sampleRepo.getSampleSet(sound_type)
+        bucket_obj = sampleRepo.getSampleSet(id)
         #logger.info(__name__, bucket_obj)
-        recordRepo.saveRecordData(bucket_obj)
+        return recordRepo.saveRecordData(bucket_obj, id, version)
 
 

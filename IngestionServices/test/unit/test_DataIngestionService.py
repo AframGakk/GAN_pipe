@@ -5,7 +5,7 @@ import os
 import re
 
 from Services.DataIngestionService import DataIngestionService
-from test.TestLog.TestLog import TestLog
+#from test.TestLog.TestLog import TestLog
 
 env_var = {
     'RABBIT': 'localhost',
@@ -15,7 +15,7 @@ env_var = {
 }
 
 os.chdir('../../')
-log = TestLog()
+#log = TestLog()
 
 class TestModelRepo(TestCase):
 
@@ -33,6 +33,6 @@ class TestModelRepo(TestCase):
 
 
     def test_conbt(self):
-        self.service.convertRawToRecordData(1, 1)
+        self.service.convertRawToRecordData(3, 1)
 
 

@@ -2,8 +2,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: ingestion-service
-# namespace: cepstralinstruments
+  name: ingestion-service-v1
 spec:
   replicas: 1
   selector:
@@ -14,13 +13,24 @@ spec:
       labels:
         app: ingestion-service
     spec:
+      volumes:
+        - name: google-cloud-key
+          secret:
+            secretName: bucket-service-account
       containers:
         - name: ingestion-service
           image: gcr.io/samplergan/ingestion-service:latest
+          volumeMounts:
+            - name: google-cloud-key
+              mountPath: /var/secrets/google
           env:
             - name: RABBIT
-              value: '10.27.240.87'
+              value: 'rabbit-mq-service'
             - name: RABBIT_USER
-              value: 'admin'
+              value: 'guest'
             - name: RABBIT_PASS
-              value: 'aframgakk19'
+              value: 'guest'
+            - name: VHOST
+              value: '/'
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: /var/secrets/google/key.json
