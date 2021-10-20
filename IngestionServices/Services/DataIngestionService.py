@@ -31,10 +31,11 @@ class DataIngestionService:
         bucket_obj = sampleRepo.getSampleSetLocal()
         recordRepo.saveRecordDataLocal(bucket_obj)
 
-    def convertRawToRecordData(self):
 
-        bucket_obj = sampleRepo.getSampleSet()
+    def convertRawToRecordData(self, id, version):
+
+        bucket_obj = sampleRepo.getSampleSet(id)
         #logger.info(__name__, bucket_obj)
-        recordRepo.saveRecordData(bucket_obj)
+        return recordRepo.saveRecordData(bucket_obj, id, version)
 
 

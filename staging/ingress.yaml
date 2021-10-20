@@ -1,0 +1,44 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: main-ingress
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: "wisebeat-ip"
+spec:
+  rules:
+   - http:
+      paths:
+      - path: /admin/training/job
+        backend:
+          serviceName: training-scheduler-srv
+          servicePort: 5007
+      - path: /api/auth/*
+        backend:
+          serviceName: auth-service-srv
+          servicePort: 5050
+      - path: /api/sample
+        backend:
+          serviceName: sample-service-srv
+          servicePort: 5020
+      - path: /api/generator/*
+        backend:
+          serviceName: generator-service-srv
+          servicePort: 5025
+      - path: /api/users/*
+        backend:
+          serviceName: user-service-srv
+          servicePort: 5000
+      - path: /api/metadata/*
+        backend:
+          serviceName: metadata-service-srv
+          servicePort: 5099
+      - path: /
+        backend:
+          serviceName: webapp-srv
+          servicePort: 80
+
+
+
+
+
+

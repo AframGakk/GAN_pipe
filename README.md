@@ -1,5 +1,8 @@
 # Wisebeat GAN engine
 
+The wisebeat engine is a specially designed stream engine pipeline for training generative adverserial networks in sound processing.
+The data lakes are located at GCP storage.
+
 ## Local Dev setup
 
 The entire engine is written in python 3.7 with docker deployment to local environment for testing and GCP kubernetes
@@ -7,11 +10,13 @@ deployment to staging and production.
 
 ### Requirements
 
-* Python 2.7
+* Python 3.7
 * pip
 * gcloud
 * docker
-* GCP dev credential file
+* GCP dev credential file (contact system admin)
+* Jenkins server credentials (contact admin)
+
 
 ### Additional requirements for OSX
 * homebrew
@@ -85,6 +90,39 @@ verify install
 ```bash
 pip --version
 ```
+
+### System setup
+
+The system is built in a microserviced manner and therefore each service should be ran 
+indivitually both in production and in development. To set up a service make sure you 
+are using a terminal and are located at the root level at each service (./ControllerService, ./GAN).
+
+Install virtual environment.
+
+```bash
+pip install virtualenv
+```
+
+Create virtual environment
+
+```bash
+virtualenv venv
+```
+
+Activate the environment
+
+```bash
+source venv/bin/activate
+```
+
+Install all requirements for the service.
+
+```bash
+pip install -r requirements.txt
+```
+
+Running each "Controller" starts the broker service for each component.
+
 
 
 

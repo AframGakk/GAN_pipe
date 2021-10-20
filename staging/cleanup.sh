@@ -10,3 +10,7 @@
 #kubectl delete service test-container-3-service
 
 kubectl delete deployment ingestion-service
+kubectl delete deployment controller-service
+kubectl delete deployment training-scheduler
+kubectl delete service training-scheduler-srv
+kubectl delete deployment gan-service

@@ -8,5 +8,9 @@ FeatureExploration/images/*
 *.log
 *.wav
 *.pkl
+
+*.ini
 *.npy
 
+*.h5
+*.png

@@ -3,13 +3,12 @@ kind: Service
 metadata:
   name: rabbit-mq-service
 spec:
-  type: LoadBalancer
-  clusterIP: 10.27.240.87
-  externalTrafficPolicy: Cluster
+  type: ClusterIP
   ports:
     - port: 5672
       name: rabbit-tcp
     - port: 15672
+      targetPort: 15672
       name: rabbit-http
   selector:
     app: rabbit-mq
