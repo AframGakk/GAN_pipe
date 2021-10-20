@@ -24,11 +24,11 @@ spec:
             - name: google-cloud-key
               mountPath: /var/secrets/google
           env:
-            - name: RABBIT
+            - name: RHOST
               value: 'rabbit-mq-service'
-            - name: RABBIT_USER
+            - name: RUSER
               value: 'guest'
-            - name: RABBIT_PASS
+            - name: RPASS
               value: 'guest'
             - name: VHOST
               value: '/'

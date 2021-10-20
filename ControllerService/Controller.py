@@ -89,6 +89,7 @@ class Controller:
 
     def ingestionCallback(self, ch, method, props, body):
         print('Callback from feature engineering')
+        print(body)
         try:
             info_obj = json.loads(body)
         except:
@@ -116,7 +117,7 @@ class Controller:
         jobDto = _jobService.deployJob(jobDto)
 
         if jobDto:
-            self.channel.basic_publish(exchange='', routing_key=self.training_key, body=jobDto.json(), properties=pika.BasicProperties(delivery_mode=2))
+            self.channel.basic_publish(exchange='', routing_key=self.training_key, body=jobDto.json())
 
 
     def trainingRetrievalCallback(self, ch, method, props, body):

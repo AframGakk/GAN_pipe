@@ -3,10 +3,10 @@ FROM tensorflow/tensorflow
 WORKDIR /usr/src/app
 
 RUN apt-get update
-RUN apt-get install -y libsndfile1-dev
+RUN apt-get install -y libsndfile1-dev python3 python3-pip
 
 COPY requirements.txt ./
-RUN pip install -r requirements.txt
+RUN pip3 install -r requirements.txt
 
 ENV PYTHONUNBUFFERED=1
 
@@ -25,4 +25,4 @@ ENV GOOGLE_APPLICATION_CREDENTIALS=./bucket.json
 
 COPY . .
 
-CMD [ "python", "./Controller.py" ]
+CMD [ "python3", "./Controller.py" ]

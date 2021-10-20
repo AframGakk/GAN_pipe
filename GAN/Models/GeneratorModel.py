@@ -4,7 +4,10 @@ from keras.layers import (Flatten, Dropout, BatchNormalization, Reshape,
 
 class GeneratorModel:
     def __init__(self, alpha=0.2):
-
+        '''
+        Main generator model used for the GAN engine.
+        :param alpha: the slope of the activation function
+        '''
         noise_dim = 500
 
         model = Sequential()

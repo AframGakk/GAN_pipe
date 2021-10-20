@@ -22,27 +22,25 @@ def hyperparameter_tuning():
                     #_service.train_v3(epochs=epochs)
 
 def train():
-    epochs = 50
+    epochs = 1
     version = 'ronja'
-    record_loc = '1/119/sample_records.pkl'
     id = 1
     batch = 128
     alpha = 0.1
     lr = 0.002
     beta = 0.75
 
-    gan = GanService(record_loc,
-                     119,
-                     1,
+    gan = GanService(version,
+                     id,
                      batch_size=batch,
                      lrelu_alpha=alpha,
                      adam_learning_rate=lr,
                      adam_beta1=beta)
 
-    gan.train_v1(epochs=epochs)
+    gan.train_v3(epochs=epochs)
 
 
-train()
+hyperparameter_tuning()
 
 
 

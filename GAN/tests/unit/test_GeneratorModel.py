@@ -8,7 +8,7 @@ import tensorflow as tf
 from keras.models import load_model
 import soundfile as sf
 import librosa
-import noisereduce as nr
+
 
 
 #from utils import audio_tools as audio
@@ -33,14 +33,16 @@ class test_GeneratorModel(TestCase):
 
 
     def test_generate_sound_be_16000hz(self):
+        g = GeneratorModel()
+        wav_location = './tmp/sample_noise.wav'
+
         # 16 is the half of batch size 32
-        noise = np.random.normal(0, 100, (16, 100))
-        images = self.generator.generate_sound(noise, training=False)
-        first = images[0]
+        noise = np.random.normal(-1, 1, (1, 500))
+        images = g.model.predict(noise).flatten()
 
         # self.save_wav(first, './tmp/new_sound.wav')
 
-        self.assertEqual(len(first), 16000)
+        sf.write(wav_location, images, 16000, subtype='PCM_16')
 
     def test_version(self):
         print(tf.__version__)
@@ -48,9 +50,9 @@ class test_GeneratorModel(TestCase):
 
     def test_load_model(self):
 
-        g_location = './tmp/generator_1.h5'
-        wav_location = './tmp/sample.wav'
-        noise = np.random.normal(0, 1, (1, 500))
+        g_location = './tmp/generator.h5'
+        wav_location = './tmp/sample_second.wav'
+        noise = np.random.normal(0, 1, (1, 100))
 
         generator = load_model(g_location)
 
@@ -65,6 +67,22 @@ class test_GeneratorModel(TestCase):
 
 
     def test_generator_v3(self):
+        volume = 0.5  # range [0.0, 1.0]
+        fs = 44100  # sampling rate, Hz, must be integer
+        duration = 1.0  # in seconds, may be float
+        f = 440.0
+        g_location = './tmp/generator.h5'
+        wav_location = './tmp/sample_sine.wav'
+
+        # generate samples, note conversion to float32 array
+        samples = (np.sin(2 * np.pi * np.arange(500) * f / fs)).astype(np.float32).flatten()
+
+
+        generator = load_model(g_location)
+
+        flat_sound = generator.predict(samples).flatten()
+
+        sf.write(wav_location, flat_sound, 16000, subtype='PCM_16')
 
         model = ""
 
@@ -73,8 +91,7 @@ class test_GeneratorModel(TestCase):
 
         data, r = librosa.load('./tmp/sample.wav', 16000)
 
-        # perform noise reduction
-        reduced_noise = nr.reduce_noise(audio_clip=data, verbose=False, noise_clip=data[:])
+
 
         sf.write('./tmp/reduced_noise.wav', reduced_noise, 16000, subtype='PCM_16')
 

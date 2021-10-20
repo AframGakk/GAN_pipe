@@ -13,7 +13,7 @@ class MQService:
         RABBIT_VHOST = environ['RVHOST']
 
         credentials = pika.PlainCredentials(RABBIT_USER, RABBIT_PASS)
-        self.connection = pika.BlockingConnection(pika.ConnectionParameters(RABBIT, 5672, RABBIT_VHOST, credentials))
+        self.connection = pika.BlockingConnection(pika.ConnectionParameters(RABBIT, 5672, RABBIT_VHOST, credentials, heartbeat=0))
         self.channel = self.connection.channel()
 
         # Queue key

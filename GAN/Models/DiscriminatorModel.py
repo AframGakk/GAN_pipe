@@ -5,19 +5,12 @@ from keras.layers import (Flatten, Dropout, BatchNormalization, Reshape,
 
 class DiscriminatorModel():
     def __init__(self, alpha=0.2):
+        '''
+        The main discriminator model.
+        :param alpha: the slope of the activation function
+        '''
         InputShape = 64000
         input_dim = 32
-        '''
-        Last param:
-        kernel_size:
-            100
-            50
-            25
-        strides:
-            7
-            5
-            3
-        '''
 
         model = Sequential()
 

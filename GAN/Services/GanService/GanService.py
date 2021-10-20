@@ -30,6 +30,11 @@ class GanService:
 
         self.training_data = load_data(record_location)
 
+        print('====================')
+        print('Training data length')
+        print (len(self.training_data))
+        print('====================')
+
         self.generatorLossHistory = []
         self.discriminatorLossHistory = []
 
@@ -82,7 +87,7 @@ class GanService:
             a1_hist.append(g_loss)
             a2_hist.append(g_acc)
 
-            if epoch % 100 == 0:
+            if epoch % 10 == 0:
                 #print("epoch: %d" % (epoch))
                 print("Discriminator_loss: %f, Generator_loss: %f" % (d_loss1, g_loss))
                 #self.plot_losses(epoch, bucket_save=True)
@@ -212,7 +217,7 @@ class GanService:
             a1_hist.append(d_acc1)
             a2_hist.append(d_acc2)
 
-            if epoch % 100 == 0:
+            if epoch % 2 == 0:
                 #print("epoch: %d" % (epoch))
                 print("Discriminator_loss: %f, Generator_loss: %f" % (d_loss1, g_loss))
                 #self.plot_losses(epoch, bucket_save=True)

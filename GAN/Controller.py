@@ -11,7 +11,7 @@ RABBIT_PASS = environ['RPASS']
 RABBIT_VHOST = environ['RVHOST']
 
 credentials = pika.PlainCredentials(RABBIT_USER, RABBIT_PASS)
-connection = pika.BlockingConnection(pika.ConnectionParameters(RABBIT, 5672, RABBIT_VHOST, credentials))
+connection = pika.BlockingConnection(pika.ConnectionParameters(RABBIT, 5672, RABBIT_VHOST, credentials, heartbeat=0))
 channel = connection.channel()
 
 # The queues

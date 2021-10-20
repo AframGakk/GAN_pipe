@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "samplergan",
+  "private_key_id": "24ccb7a1c15fcba90421fc043dc373cf04dde513",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCzSkwqRhvYRuSI\nMAUGsbQVAgO8qaGU0yTRvcwMOH0DjMGgO+bDmN2AOZgcAnxaNo1iemnuL5d0m9VI\n/clLvXtXcLlbxbRkACUKU+l3qVwwdC2EZv6y5KpQpDsM6f8w5qjxSQW5/ndadafy\nXO2zJpYBON+L9ecjd8fYtunUPKrj5zm5BtDi6ySQsnUuhM0OFyhy1hs+UXUqhrvK\nBzYWdWMfls4SThtv4VzsFPHCEhyc6CqvnIM0AjutbsBWMkLp2a/7Vzdvhqa0nmkD\n5UBpDCiCzeFguBuf0vpqaSHiU8QqFzP3EsJK+7GkXAFCYDPPtrdYsSqGFden/hIm\nd99ZsvVnAgMBAAECggEAURn7QSYso1VSPE6of2I0KUqbgSSknGs0nRIDcsW8uzXZ\nQo/GL9V+4OlspsLzGGXT5+ei8mUh2FRDkzyF6ZaBbEjn+B0DIDc2iijyE7iPJLXw\n/xMOBMNOTaM0uP9Ceg7k/hx/lCaJO+i7+3TQ63i5Yz0kVi36i/87bgsz09dLoEJu\n8SDJzcquD9tltPsJS2xICmFcRQCWQOmXnfx6wpeD0ugjXlT7rLnoWaiEVwIimFxS\nHzEfgEHZC7g5YC8oZaaZZy81ZzQ1qT+ezeGS8mB7as/Q2E62GJ7DcjMe28E2dPDy\nG1T9Taj+YpKXoWOhPzW4LPDTKpq1KY097WjQSEhAhQKBgQDZJHKy49kR5sL5irnw\n1QklOBhD0/TLdhIR+FLVB7GzSdsBkYFuy9kCOErzv6y1qo0C00JY9lV44UJqfLam\ndKXyySy72/Nt7keOOSgjAf0ccu5xyGx1KsjtOXTJzSWYu3nmIbg5ignTSaKpze0y\nEVHGNOiC9s+dblZd0GJPWTrvzQKBgQDTX8wUTW60sX8AmYgQMN8/gMMp9B1dCAsM\nU5akHo95Skxr9bt+hqrWPC59oITHItyYhsB/MURh7f3FyDUesaHq1fX1EXyL4/66\n7oU8oOYte5EdtF95Oxn3SJoT981caAJeI5A7axXD8381+cb1cJBf4xeGWT+Je5ZG\nLGmCeCi+AwKBgEzNQ3RaepCGWjgBBTtVXmK3sH1tHoxIOqP4fPO0QPn1CW1Ilcsm\ndp7+YiRMiz3GERIKvtDQb/LNWbxoWAIQCBITbasUZMlhGhYHyVZ4gZnqXMQJ67KV\na3Pcep5V3RJkXP00uABB/q+ov8vndhnbXl0IoaSQv2YjfJC5/8uo99uRAoGBAMW0\nndsDjh/ewW7bLCQQwk/QbTtphKmGo2bVLFq35vTI5PA5+TRgW5xk0AtbP7ZPSkw0\nBgsyFscOZsY+/EiIV22i0Rp3T6o9B/7qqJ7L1GAIavSAyKhI+oGMW+l/Z4seEdDh\nrL+W6tXMhFkFFu5taez2KQPVqJM8kJN0aP/KyjjnAoGAAZl+z3yU5pxCeIUyuEHO\nmIR+VxDeZN7vzAL2vLS5bDtnd2J+By33bmVR39znRmItVavU1bBz4NeSsyXQRq7f\nvD3rKaO9EWSRrZasAQokqSqmHsZzrDCJnVCT+eUvLJ2duPk0qCQdjUu8WuG6n3pD\nN3PmQcBCYdnM6DaYpz/iKQo=\n-----END PRIVATE KEY-----\n",
+  "client_email": "wisebeat-buckets@samplergan.iam.gserviceaccount.com",
+  "client_id": "105479035176835989605",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/wisebeat-buckets%40samplergan.iam.gserviceaccount.com"
+}

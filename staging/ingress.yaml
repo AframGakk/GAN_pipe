@@ -32,6 +32,10 @@ spec:
         backend:
           serviceName: metadata-service-srv
           servicePort: 5099
+      - path: /
+        backend:
+          serviceName: webapp-srv
+          servicePort: 80
 
 
 
