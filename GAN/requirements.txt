@@ -5,5 +5,5 @@ pandas
 google-cloud-storage
 soundfile
 pika
-tensorflow==1.14.0
+tensorflow==2.6.4
 keras==2.2.5
